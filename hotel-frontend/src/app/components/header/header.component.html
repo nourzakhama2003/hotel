@@ -1,0 +1,38 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="relative" *ngIf="isAuthenitcatedUser; else nonauth">
+     <div class="p-2 border-white  border-2 rounded-full cursor-pointer text-black profile-button " (click)="toggleProfileDropdown()"> 
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-pen-icon lucide-user-pen">
+         <path d="M11.5 15H7a4 4 0 0 0-4 4v2"/>
+         <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+         <circle cx="10" cy="7" r="4"/>
+       </svg>
+     </div>
+     
+     <!-- Profile Dropdown -->
+     <div *ngIf="isProfileDropdownOpen" class="bg-white min-w-[200px] absolute top-12 left-0 rounded-lg shadow-lg border border-gray-200 z-50 profile-dropdown">
+       <div class="p-4">
+         <p class="text-gray-800 font-medium">Profile Menu</p>
+         <div class="mt-2 space-y-2">
+           <a routerLink="/profile" (click)="toggleProfileDropdown()" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">edite profile</a>
+           <hr class="my-2">
+           <a (click)="logout()" class="block px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded cursor-pointer">Logout</a>
+         </div>
+       </div>
+     </div>
+    </div>
+    <ng-template #nonauth>
+      <h1>hotel mangement</h1>
+    </ng-template>
+    <ul class="nav-links">
+      <li *ngFor="let link of links"><a [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">{{link.name}}</a></li>
+  <div *ngIf="!isAuthenitcatedUser; else authTemplate">
+  <a (click)="login()">Login</a>
+  <a (click)="signUp()">Sign Up</a>
+</div>
+<ng-template #authTemplate>
+  <a (click)="logout()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg></a>
+</ng-template>
+    </ul>
+  </nav>
+</header>
