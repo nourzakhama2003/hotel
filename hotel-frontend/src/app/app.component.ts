@@ -12,6 +12,6 @@ import { AppKeycloakService } from './keycloak/services/appKeycloakService';
 })
 export class AppComponent implements OnInit {
 ngOnInit(): void {
-    console.log('hi');
+ 
 }
 }

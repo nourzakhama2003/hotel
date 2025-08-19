@@ -1,5 +1,7 @@
 package com.nourproject.hotel.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class HotelDto {
-    String hotelName;
+  @NotBlank(message="hotel name required")
+    private String hotelName;
 }

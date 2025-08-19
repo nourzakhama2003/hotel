@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    hotel!: string;
+    hotels!: string;
     constructor(private hotelService: HotelService, private snackBar: MatSnackBar) { }
     ngOnInit(): void {
         console.log('🏠 Home component initializing...');
@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
         this.hotelService.getHotels().subscribe({
             next: (data: string) => {
 
-                this.hotel = data;
+                this.hotels = data;
                 this.snackBar.open('Hotel data loaded successfully!', 'Fermer', { duration: 3000 });
             },
             error: (error) => {

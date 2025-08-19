@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @Entity
-@Table(name="hotel")
+@Table(name="hotels")
 public class Hotel {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long hotelId;
+    private Long id;
   @Column(name="hotelName")
     private String hotelName;
 }

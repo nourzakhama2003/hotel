@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 import { KeycloakService } from 'keycloak-angular';
 import { UserProfile } from "../userProfile";
-
+import { UserService } from "../../services/user.service";
 @Injectable({
   providedIn: 'root'
 })
 export class AppKeycloakService {
   private _KeycloakService: KeycloakService;
-  private _profile: UserProfile | undefined;
+  private _profile: Partial<UserProfile> | undefined;
 
-  constructor(private keycloakService: KeycloakService) {
+  constructor(private keycloakService: KeycloakService, private userService: UserService) {
     this._KeycloakService = keycloakService;
   }
 
@@ -19,12 +19,11 @@ export class AppKeycloakService {
   }
 
   // Getter to access user profile
-  get profile(): UserProfile | undefined {
+  get profile(): Partial<UserProfile> | undefined {
     return this._profile;
   }
 
   async init(): Promise<boolean> {
-    console.log('Starting Keycloak initialization');
     const auth = await this._KeycloakService.init({
       config: {
         url: 'http://localhost:8080',
@@ -41,28 +40,28 @@ export class AppKeycloakService {
     });
 
     if (auth) {
-      console.log("User authenticated");
+
       await this.loadUserProfile();
 
       // Set up token refresh handler only for authenticated users
       this._KeycloakService.getKeycloakInstance().onTokenExpired = () => {
-        console.log('Access token expired, refreshing...');
+
         this._KeycloakService.getKeycloakInstance().updateToken(30).then(refreshed => {
           if (refreshed) {
-            console.log('Token refreshed successfully');
-            // Reload user profile with new token
+
+
             this.loadUserProfile();
           } else {
-            console.log('Token refresh failed, logging out...');
+
             this.logout();
           }
         }).catch(error => {
-          console.error('Token refresh error:', error);
+
           this.logout();
         });
       };
     } else {
-      console.log("User not authenticated");
+
     }
 
     return auth;
@@ -73,20 +72,38 @@ export class AppKeycloakService {
       // Get user information from the token instead of making API call
       const tokenParsed = this._KeycloakService.getKeycloakInstance().tokenParsed;
       const token = await this._KeycloakService.getToken();
-      console.log('this token persed', tokenParsed);
+
+
 
       if (tokenParsed) {
-        // Store profile from token claims
+        const role = tokenParsed['realm_access']?.roles || "";
+        let userRole = "User"; // Match your backend enum exactly
+        if (role.includes("admin")) {
+          userRole = "Admin"; // Match your backend enum exactly
+        }
+
         this._profile = {
-          userName: tokenParsed['preferred_username'] || '',
+          userName: tokenParsed['preferred_username'] || tokenParsed['sub'] || '', // Fix: ensure userName is not null
           email: tokenParsed['email'] || '',
           firstName: tokenParsed['given_name'] || '',
           lastName: tokenParsed['family_name'] || '',
           token: token,
-          roles: tokenParsed['realm_access']?.roles || []
-        } as UserProfile;
+          role: userRole,
+        } as Partial<UserProfile>;
 
-        console.log('User profile loaded from token:', this._profile);
+        // Only call syncFromKeycloak if we have a valid userName
+        if (this._profile.userName) {
+          this.userService.syncFromKeycloak(this._profile).subscribe({
+            next: (response: UserProfile) => {
+              console.log('User synced to database:', response);
+            },
+            error: (error: any) => {
+              console.error('Failed to sync user to database:', error);
+            }
+          });
+        }
+
+        console.log('User profile loaded:', this._profile);
       } else {
         console.warn('No token parsed available');
       }

@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
         }
 
         const routeRoles: string[] = route.data['roles'] || [];
-        const userRoles: string[] = this.appKeycloakService?.profile?.roles || [];
+        const userRoles: string = this.appKeycloakService?.profile?.role || "";
 
 
         if (routeRoles.length === 0) {
@@ -33,8 +33,9 @@ export class AuthGuard implements CanActivate {
         }
 
       
-        const hasAccess = routeRoles.some(role => userRoles.includes(role));
-
+        const hasAccess = routeRoles.some(
+            role => role.toLowerCase() === userRoles.toLowerCase()
+        );
         if (hasAccess) {
             return true;
         } else {
