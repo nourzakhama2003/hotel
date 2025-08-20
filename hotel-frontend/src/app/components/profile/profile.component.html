@@ -1,0 +1,30 @@
+<div>
+
+    <form [formGroup]="profileForm" class="flex flex-col gap-4 p-4" (ngSubmit)="onSubmit()">
+        
+    
+<img [src]="selectedImage || profile.profileImage || '/assets/images/userimage.png'" alt="Profile Image" class="w-32 h-32 rounded-full mb-4 border-2 border-green-500">
+  
+<input type="file"  accept="image/*" (change)="onFileSelected($event)" class="mb-4">
+               
+        
+        <label for="name">userName</label>
+        <input type="text" id="name" formControlName="userName" readonly>
+         
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email" readonly>
+
+         <label for="firstName">firstName:</label>
+        <input type="text" id="firstName" formControlName="firstName">
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" formControlName="lastName">
+
+       
+
+      <div class="flex justify-between p-4"><button (click)="onClose()">annuler</button>
+        <button type="submit">Update</button></div>  
+    </form>
+</div>
+

@@ -25,6 +25,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role ;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String profileImage;
 
 

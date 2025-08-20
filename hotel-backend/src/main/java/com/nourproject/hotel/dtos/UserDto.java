@@ -17,4 +17,5 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private UserRole role ;
+    private String profileImage; // Base64 encoded profile image from Keycloak
 }

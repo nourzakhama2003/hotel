@@ -13,14 +13,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface UserMapper {
     
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "profileImage", ignore = true)
     User userDtoToUser(UserDto userDto);
     
     UserDto userToUserDto(User user);
     
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "profileImage", ignore = true)
     void updateUserUpdateDtoToUser(UserUpdateDto userUpdateDto, @MappingTarget User user);
     
     /**

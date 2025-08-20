@@ -24,4 +24,33 @@ export class UserService {
     syncFromKeycloak(userProfile: Partial<UserProfile>): Observable<UserProfile> {
         return this.http.post<UserProfile>(`${this.URL}/sync`, userProfile);
     }
+
+
+
+    updateUserProfile(id: any, profile: Partial<UserProfile>): Observable<Partial<UserProfile>> {
+        return this.http.put<Partial<UserProfile>>(`${this.URL}/${id}`, profile);
+    }
+
+    updateUserByUsername(username: string, profile: Partial<UserProfile>): Observable<UserProfile> {
+        // Convert UserProfile to UserUpdateDto format expected by backend
+        const updateData = {
+            userName: profile.userName,
+            email: profile.email,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            role: profile.role,
+            profileImage: profile.profileImage
+        };
+
+        console.log('Sending update data to backend:', updateData);
+        return this.http.put<UserProfile>(`${this.URL}/username/${username}`, updateData);
+    }
+
+    getUserByUsername(username: string): Observable<UserProfile> {
+        return this.http.get<UserProfile>(`${this.URL}/username/${username}`);
+    }
+
+    getUserByEmail(email: string): Observable<UserProfile> {
+        return this.http.get<UserProfile>(`${this.URL}/email/${email}`);
+    }
 }

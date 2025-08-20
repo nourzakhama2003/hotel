@@ -97,6 +97,12 @@
             <artifactId>stripe-java</artifactId>
             <version>29.0.0</version>
         </dependency>
+        <!-- Keycloak Admin Client for bidirectional sync -->
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>25.0.0</version>
+        </dependency>
 
     </dependencies>
 

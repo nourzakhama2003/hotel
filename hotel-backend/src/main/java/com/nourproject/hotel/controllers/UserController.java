@@ -38,6 +38,34 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        try {
+            User user = this.userService.findByUserName(username);
+            if (user != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(user);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
+        try {
+            User user = this.userService.findByEmail(email);
+            if (user != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(user);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<User> addUser(@Valid @RequestBody UserDto userDto){
         try {
@@ -64,6 +92,28 @@ public class UserController {
     ResponseEntity<User> updateHotelById(@PathVariable(value = "id",required = true) Long id, @Valid @RequestBody UserUpdateDto userUpdateDto){
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.updateById(id,userUpdateDto)) ;
     }
+    
+    @PutMapping("/username/{username}")
+    public ResponseEntity<User> updateUserByUsername(@PathVariable("username") String username, @RequestBody UserUpdateDto userUpdateDto) {
+        try {
+            System.out.println("Received update request for username: " + username);
+            System.out.println("Update data: " + userUpdateDto);
+            
+            User existingUser = this.userService.findByUserName(username);
+            if (existingUser != null) {
+                User updatedUser = this.userService.updateById(existingUser.getId(), userUpdateDto);
+                return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+            } else {
+                System.err.println("User not found: " + username);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            System.err.println("Error updating user: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+    
     @DeleteMapping("/{id}")
     ResponseEntity<User> deleteHotelById(@PathVariable(value = "id",required = true) Long id){
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.deleteById(id));
