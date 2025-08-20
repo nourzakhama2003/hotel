@@ -96,8 +96,7 @@ public class UserController {
     @PutMapping("/username/{username}")
     public ResponseEntity<User> updateUserByUsername(@PathVariable("username") String username, @RequestBody UserUpdateDto userUpdateDto) {
         try {
-            System.out.println("Received update request for username: " + username);
-            System.out.println("Update data: " + userUpdateDto);
+
             
             User existingUser = this.userService.findByUserName(username);
             if (existingUser != null) {

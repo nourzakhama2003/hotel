@@ -73,54 +73,22 @@ public class UserService {
     }
 
     public User updateById(Long id, UserUpdateDto userUpdateDto){
-        System.out.println("=== UPDATE BY ID CALLED ===");
-        System.out.println("User ID: " + id);
-        System.out.println("Update data: " + userUpdateDto);
-        
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new GlobalException("user with ID " + id + " not found"));
-                
-        System.out.println("BEFORE UPDATE - User in database:");
-        System.out.println("- FirstName: " + user.getFirstName());
-        System.out.println("- LastName: " + user.getLastName());
-        System.out.println("- ProfileImage: " + (user.getProfileImage() != null ? "Has image" : "No image"));
-        
         this.userMapper.updateUserUpdateDtoToUser(userUpdateDto, user);
-        
-        System.out.println("AFTER MAPPING - User object:");
-        System.out.println("- FirstName: " + user.getFirstName());
-        System.out.println("- LastName: " + user.getLastName());
-        System.out.println("- ProfileImage: " + (user.getProfileImage() != null ? "Has image" : "No image"));
-        
-        // Save to database first
         User updatedUser = this.userRepository.save(user);
-        
-        System.out.println("AFTER DATABASE SAVE - User object:");
-        System.out.println("- FirstName: " + updatedUser.getFirstName());
-        System.out.println("- LastName: " + updatedUser.getLastName());
-        System.out.println("- ProfileImage: " + (updatedUser.getProfileImage() != null ? "Has image" : "No image"));
-        
-        // Then sync to Keycloak - this is the simplest way as requested
         try {
-            System.out.println("Syncing user profile to Keycloak for: " + updatedUser.getUserName());
             boolean syncSuccess = keycloakAdminService.updateUserCompleteProfile(
                 updatedUser.getUserName(),
                 updatedUser.getFirstName(),
-                updatedUser.getLastName(),
-                updatedUser.getProfileImage()
+                updatedUser.getLastName()
             );
             
-            if (syncSuccess) {
-                System.out.println("Successfully synced user profile to Keycloak: " + updatedUser.getUserName());
-            } else {
-                System.err.println("Failed to sync user profile to Keycloak: " + updatedUser.getUserName());
-            }
+
         } catch (Exception e) {
             System.err.println("Error syncing to Keycloak: " + e.getMessage());
-            // Don't throw exception - database update should still succeed even if Keycloak sync fails
         }
-        
-        System.out.println("=== UPDATE BY ID COMPLETED ===");
+
         return updatedUser;
     }
 
