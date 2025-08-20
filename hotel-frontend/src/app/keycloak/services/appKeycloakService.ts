@@ -2,12 +2,14 @@ import { Injectable } from "@angular/core";
 import { KeycloakService } from 'keycloak-angular';
 import { UserProfile } from "../userProfile";
 import { UserService } from "../../services/user.service";
+import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class AppKeycloakService {
   private _KeycloakService: KeycloakService;
   private _profile: Partial<UserProfile> | undefined;
+  private _profileSubject = new BehaviorSubject<Partial<UserProfile> | undefined>(undefined);
 
   constructor(private keycloakService: KeycloakService, private userService: UserService) {
     this._KeycloakService = keycloakService;
@@ -21,6 +23,11 @@ export class AppKeycloakService {
   // Getter to access user profile
   get profile(): Partial<UserProfile> | undefined {
     return this._profile;
+  }
+
+  // Observable to track profile changes
+  get profileObservable(): Observable<Partial<UserProfile> | undefined> {
+    return this._profileSubject.asObservable();
   }
 
   async init(): Promise<boolean> {
@@ -83,7 +90,7 @@ export class AppKeycloakService {
         }
 
         this._profile = {
-          userName: tokenParsed['preferred_username'] || tokenParsed['sub'] || '', // Fix: ensure userName is not null
+          userName: tokenParsed['preferred_username'] || tokenParsed['sub'] || '',
           email: tokenParsed['email'] || '',
           firstName: tokenParsed['given_name'] || '',
           lastName: tokenParsed['family_name'] || '',
@@ -91,11 +98,14 @@ export class AppKeycloakService {
           role: userRole,
         } as Partial<UserProfile>;
 
-        // Only call syncFromKeycloak if we have a valid userName
         if (this._profile.userName) {
           this.userService.syncFromKeycloak(this._profile).subscribe({
             next: (response: UserProfile) => {
-              console.log('User synced to database:', response);
+
+              this._profile = response;
+              this._profileSubject.next(this._profile); // Notify subscribers
+              console.log("terminal full profile data", this._profile);
+
             },
             error: (error: any) => {
               console.error('Failed to sync user to database:', error);
@@ -139,5 +149,30 @@ export class AppKeycloakService {
 
   hasResourceRole(role: string, resource?: string): boolean {
     return this._KeycloakService.isUserInRole(role, resource);
+  }
+
+  /**
+   * Reloads user profile from Keycloak after updates
+   * This method refreshes the token and reloads profile data
+   */
+  async reloadUserProfile(): Promise<void> {
+    try {
+      // Force token refresh to get updated claims from Keycloak
+      const refreshed = await this._KeycloakService.getKeycloakInstance().updateToken(5);
+
+      if (refreshed) {
+        console.log('Token refreshed successfully');
+      } else {
+        console.log('Token is still valid');
+      }
+
+      // Reload the user profile with fresh token data
+      await this.loadUserProfile();
+
+    } catch (error) {
+      console.error('Failed to refresh token and reload profile:', error);
+      // If refresh fails, try to reload profile anyway
+      await this.loadUserProfile();
+    }
   }
 }

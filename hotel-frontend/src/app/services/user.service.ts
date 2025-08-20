@@ -32,7 +32,7 @@ export class UserService {
     }
 
     updateUserByUsername(username: string, profile: Partial<UserProfile>): Observable<UserProfile> {
-        // Convert UserProfile to UserUpdateDto format expected by backend
+      
         const updateData = {
             userName: profile.userName,
             email: profile.email,
@@ -41,8 +41,6 @@ export class UserService {
             role: profile.role,
             profileImage: profile.profileImage
         };
-
-        console.log('Sending update data to backend:', updateData);
         return this.http.put<UserProfile>(`${this.URL}/username/${username}`, updateData);
     }
 

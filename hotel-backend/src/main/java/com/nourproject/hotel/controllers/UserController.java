@@ -119,6 +119,29 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.deleteById(id));
     }
     
+    @GetMapping("/debug/{username}")
+    public ResponseEntity<Map<String, Object>> debugUser(@PathVariable("username") String username) {
+        try {
+            User user = this.userService.findByUserName(username);
+            if (user != null) {
+                Map<String, Object> debugInfo = Map.of(
+                    "id", user.getId(),
+                    "username", user.getUserName(),
+                    "firstName", user.getFirstName() != null ? user.getFirstName() : "NULL",
+                    "lastName", user.getLastName() != null ? user.getLastName() : "NULL",
+                    "email", user.getEmail() != null ? user.getEmail() : "NULL",
+                    "hasProfileImage", user.getProfileImage() != null,
+                    "profileImageLength", user.getProfileImage() != null ? user.getProfileImage().length() : 0
+                );
+                return ResponseEntity.ok(debugInfo);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
+    
 
 
     

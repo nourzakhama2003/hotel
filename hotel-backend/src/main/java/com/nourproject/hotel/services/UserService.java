@@ -51,73 +51,76 @@ public class UserService {
     public User updateByUsername(String username, UserUpdateDto userUpdateDto) {
         User user = this.userRepository.findByUserName(username)
                 .orElseThrow(() -> new GlobalException("User with username " + username + " not found"));
+        
+        // Use updateById which now includes Keycloak sync
         return updateById(user.getId(), userUpdateDto);
     }
 
     public User syncFromKeycloak(UserDto keycloakData) {
+        System.out.println("SYNC FROM KEYCLOAK CALLED - This might be overriding your database changes!");
+        System.out.println("Keycloak data: " + keycloakData);
+        
         User existingUser = findByUserName(keycloakData.getUserName());
 
         if (existingUser != null) {
+            System.out.println("Existing user found, updating from Keycloak data (THIS MIGHT OVERRIDE YOUR CHANGES)");
             UserUpdateDto updateDto = userMapper.userDtoToUserUpdateDto(keycloakData);
             return updateById(existingUser.getId(), updateDto);
         } else {
+            System.out.println("Creating new user from Keycloak data");
             return save(keycloakData);
         }
     }
 
     public User updateById(Long id, UserUpdateDto userUpdateDto){
-        System.out.println("Updating user with ID: " + id);
+        System.out.println("=== UPDATE BY ID CALLED ===");
+        System.out.println("User ID: " + id);
         System.out.println("Update data: " + userUpdateDto);
         
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new GlobalException("user with ID " + id + " not found"));
+                
+        System.out.println("BEFORE UPDATE - User in database:");
+        System.out.println("- FirstName: " + user.getFirstName());
+        System.out.println("- LastName: " + user.getLastName());
+        System.out.println("- ProfileImage: " + (user.getProfileImage() != null ? "Has image" : "No image"));
         
-        System.out.println("Found user: " + user.getUserName());
-        
-        // Store original values to detect changes
-        String originalFirstName = user.getFirstName();
-        String originalLastName = user.getLastName();
-        
-        // Update the user entity
         this.userMapper.updateUserUpdateDtoToUser(userUpdateDto, user);
+        
+        System.out.println("AFTER MAPPING - User object:");
+        System.out.println("- FirstName: " + user.getFirstName());
+        System.out.println("- LastName: " + user.getLastName());
+        System.out.println("- ProfileImage: " + (user.getProfileImage() != null ? "Has image" : "No image"));
+        
+        // Save to database first
         User updatedUser = this.userRepository.save(user);
         
-        System.out.println("User updated successfully: " + updatedUser.getUserName());
-        System.out.println("Profile image updated: " + (updatedUser.getProfileImage() != null ? "Yes" : "No"));
+        System.out.println("AFTER DATABASE SAVE - User object:");
+        System.out.println("- FirstName: " + updatedUser.getFirstName());
+        System.out.println("- LastName: " + updatedUser.getLastName());
+        System.out.println("- ProfileImage: " + (updatedUser.getProfileImage() != null ? "Has image" : "No image"));
         
-        // Check if firstName or lastName changed and sync to Keycloak
-        boolean nameChanged = false;
-        if ((userUpdateDto.getFirstName() != null && !userUpdateDto.getFirstName().equals(originalFirstName)) ||
-            (userUpdateDto.getLastName() != null && !userUpdateDto.getLastName().equals(originalLastName))) {
-            nameChanged = true;
-        }
-        
-        if (nameChanged && updatedUser.getUserName() != null) {
-            try {
-                System.out.println("🔄 Syncing name changes to Keycloak for user: " + updatedUser.getUserName());
-                System.out.println("   First Name: " + originalFirstName + " -> " + updatedUser.getFirstName());
-                System.out.println("   Last Name: " + originalLastName + " -> " + updatedUser.getLastName());
-                
-                boolean syncSuccess = keycloakAdminService.updateUserProfile(
-                    updatedUser.getUserName(),
-                    updatedUser.getFirstName(),
-                    updatedUser.getLastName()
-                );
-                
-                if (syncSuccess) {
-                    System.out.println("✅ Successfully synced name changes to Keycloak for user: " + updatedUser.getUserName());
-                } else {
-                    System.err.println("❌ Failed to sync name changes to Keycloak for user: " + updatedUser.getUserName());
-                }
-            } catch (Exception e) {
-                System.err.println("💥 Error syncing to Keycloak: " + e.getMessage());
-                e.printStackTrace();
-                // Don't fail the database update if Keycloak sync fails
+        // Then sync to Keycloak - this is the simplest way as requested
+        try {
+            System.out.println("Syncing user profile to Keycloak for: " + updatedUser.getUserName());
+            boolean syncSuccess = keycloakAdminService.updateUserCompleteProfile(
+                updatedUser.getUserName(),
+                updatedUser.getFirstName(),
+                updatedUser.getLastName(),
+                updatedUser.getProfileImage()
+            );
+            
+            if (syncSuccess) {
+                System.out.println("Successfully synced user profile to Keycloak: " + updatedUser.getUserName());
+            } else {
+                System.err.println("Failed to sync user profile to Keycloak: " + updatedUser.getUserName());
             }
-        } else {
-            System.out.println("ℹ️ No name changes detected, skipping Keycloak sync");
+        } catch (Exception e) {
+            System.err.println("Error syncing to Keycloak: " + e.getMessage());
+            // Don't throw exception - database update should still succeed even if Keycloak sync fails
         }
         
+        System.out.println("=== UPDATE BY ID COMPLETED ===");
         return updatedUser;
     }
 
