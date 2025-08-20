@@ -89,16 +89,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.userName) {
+        
         this.userService.updateUserByUsername(result.userName, result).subscribe({
           next: user => {
-          
-              this.matSnackBar.open('user profile mis à jour avec succès', 'Fermer', { duration: 3000 });
-           
+         
+            this.matSnackBar.open('user profile mis à jour avec succès', 'Fermer', { duration: 3000 });
           },
           error: (error) => {
             this.matSnackBar.open('erreur lors de la mise à jour du profil', 'Fermer', { duration: 3000 });
           }
         });
+      } else {
+        console.log('Dialog was closed without updating (result is null or no userName)');
       }
     });
   }

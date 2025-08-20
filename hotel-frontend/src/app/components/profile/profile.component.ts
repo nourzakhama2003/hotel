@@ -18,9 +18,7 @@ export class ProfileComponent {
   constructor(private matDialogRef: MatDialogRef<ProfileComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private matSnackBarr: MatSnackBar, private formBuilder: FormBuilder) {
     this.profile = data;
 
-    console.log('Profile data received:', this.profile); // Debug log
-
-    // Initialize selectedImage with existing profile image if available
+    
     this.selectedImage = this.profile.profileImage || null;
 
     this.profileForm = this.formBuilder.group({
@@ -34,27 +32,18 @@ export class ProfileComponent {
 
   }
   onSubmit() {
-    // Update profile with form values before closing
+   
     const formValues = this.profileForm.value;
-
-    // Debug logs to check what we're sending
-    console.log('Form values:', formValues);
-    console.log('Selected image:', this.selectedImage);
-    console.log('Profile image from form:', formValues.profileImage);
-
     this.profile = {
       ...this.profile,
       firstName: formValues.firstName,
       lastName: formValues.lastName,
-      // Use the selectedImage if available, otherwise use form value
       profileImage: this.selectedImage as string || formValues.profileImage
     };
-
-    console.log('Final profile to send:', this.profile);
     this.matDialogRef.close(this.profile);
   }
   onClose() {
-    this.matDialogRef.close();
+    this.matDialogRef.close(null);
   }
   onFileSelected(event: any) {
     const file = event.target.files[0];
