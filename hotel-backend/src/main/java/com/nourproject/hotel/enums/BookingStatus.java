@@ -1,7 +1,7 @@
 package com.nourproject.hotel.enums;
 
 public enum BookingStatus {
-    BOKEED,
+    BOOKED,
     CANCELLED,
     CHECKED_OUT,
     CHECKED_IN,

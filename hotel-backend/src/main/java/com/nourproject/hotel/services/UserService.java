@@ -5,6 +5,7 @@ import com.nourproject.hotel.entities.User;
 import com.nourproject.hotel.exceptions.GlobalException;
 import com.nourproject.hotel.mappers.UserMapper;
 import com.nourproject.hotel.repositories.UserRepository;
+import com.nourproject.hotel.services.KeycloakAdminService;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
