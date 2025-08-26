@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserProfile } from '../../keycloak/userProfile';
+import { UserProfile } from '../../constant/userProfile';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -18,7 +18,7 @@ export class ProfileComponent {
   constructor(private matDialogRef: MatDialogRef<ProfileComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private matSnackBarr: MatSnackBar, private formBuilder: FormBuilder) {
     this.profile = data;
 
-    
+
     this.selectedImage = this.profile.profileImage || null;
 
     this.profileForm = this.formBuilder.group({
@@ -32,7 +32,7 @@ export class ProfileComponent {
 
   }
   onSubmit() {
-   
+
     const formValues = this.profileForm.value;
     this.profile = {
       ...this.profile,

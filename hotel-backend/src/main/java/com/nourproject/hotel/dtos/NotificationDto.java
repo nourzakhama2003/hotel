@@ -2,24 +2,30 @@ package com.nourproject.hotel.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nourproject.hotel.enums.UserRole;
+import com.nourproject.hotel.enums.NotificationType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @Data
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public class UserUpdateDto {
+public class NotificationDto {
     private Long id;
-    private String userName;
-    private String  email;
-    private String firstName;
-    private String lastName;
-    private UserRole role ;
-    private String profileImage; 
+    private String subject;
+    private String recipient;
+    private String body;
+    private NotificationType type;
+    private String bookingReference;
+    private LocalDateTime createdAt;
+
+
 }

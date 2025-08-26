@@ -32,7 +32,7 @@ public class SecurityConfig {
                 })
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/public/**").permitAll()//publicendpoint
+                .requestMatchers("/api/public/**","/api/rooms","/api/booking").permitAll()//publicendpoint
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/user/**").hasRole("USER")
                 .anyRequest().authenticated()
@@ -43,10 +43,10 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        
+
         // Set username claim
         converter.setPrincipalClaimName("preferred_username");
-        
+
         // Convert roles from realm_access.roles to ROLE_* authorities
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             var realmAccess = jwt.getClaimAsMap("realm_access");
@@ -54,12 +54,12 @@ public class SecurityConfig {
                 @SuppressWarnings("unchecked")
                 var roles = (java.util.List<String>) realmAccess.get("roles");
                 return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                    .collect(java.util.stream.Collectors.toList());
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                        .collect(java.util.stream.Collectors.toList());
             }
             return java.util.Collections.emptyList();
         });
-        
+
         return converter;
     }
 
@@ -70,7 +70,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

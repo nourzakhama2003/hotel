@@ -80,7 +80,93 @@ public class KeycloakAdminService {
         }
     }
 
+    /**
+     * Deletes a user from Keycloak using their email address
+     * This method is called when a user is deleted from the local database
+     * 
+     * @param email The email address of the user to delete
+     * @return true if deletion was successful, false otherwise
+     */
+    public boolean deleteUserByEmail(String email) {
+        try {
+            // Step 1: Get users resource from Keycloak realm
+            UsersResource usersResource = realmResource.users();
+            
+            // Step 2: Search for user by email (exact match)
+            List<UserRepresentation> users = usersResource.searchByEmail(email, true);
+            
+            if (users.isEmpty()) {
+                System.err.println("User not found in Keycloak with email: " + email);
+                return false;
+            }
+            
+            // Step 3: Get the first user (should be unique by email)
+            UserRepresentation user = users.get(0);
+            String userId = user.getId();
+            String username = user.getUsername();
+            
+            // Step 4: Delete the user from Keycloak
+            UserResource userResource = usersResource.get(userId);
+            userResource.remove();
+            
+            System.out.println("Successfully deleted user from Keycloak:");
+            System.out.println("- Email: " + email);
+            System.out.println("- Username: " + username);
+            System.out.println("- User ID: " + userId);
+            
+            return true;
+            
+        } catch (Exception e) {
+            System.err.println("Failed to delete user from Keycloak with email: " + email);
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    /**
+     * Deletes a user from Keycloak using their username
+     * Alternative method for deletion when you have username instead of email
+     * 
+     * @param username The username of the user to delete
+     * @return true if deletion was successful, false otherwise
+     */
+    public boolean deleteUserByUsername(String username) {
+        try {
+            // Step 1: Get users resource from Keycloak realm
+            UsersResource usersResource = realmResource.users();
+            
+            // Step 2: Search for user by username (exact match)
+            List<UserRepresentation> users = usersResource.search(username, true);
+            
+            if (users.isEmpty()) {
+                System.err.println("User not found in Keycloak with username: " + username);
+                return false;
+            }
+            
+            // Step 3: Get the first user (should be unique by username)
+            UserRepresentation user = users.get(0);
+            String userId = user.getId();
+            String email = user.getEmail();
+            
+            // Step 4: Delete the user from Keycloak
+            UserResource userResource = usersResource.get(userId);
+            userResource.remove();
+            
+            System.out.println("Successfully deleted user from Keycloak:");
+            System.out.println("- Username: " + username);
+            System.out.println("- Email: " + email);
+            System.out.println("- User ID: " + userId);
+            
+            return true;
+            
+        } catch (Exception e) {
+            System.err.println("Failed to delete user from Keycloak with username: " + username);
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 }

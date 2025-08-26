@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppKeycloakService } from './keycloak/services/appKeycloakService';
+import { UserService } from './services/user.service';
 
 
 @Component({
@@ -11,7 +12,9 @@ import { AppKeycloakService } from './keycloak/services/appKeycloakService';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+  constructor(private userService:UserService,private appkeycloakService:AppKeycloakService){}
 ngOnInit(): void {
+console.log("app component profile" ,this.appkeycloakService.profile);
  
 }
 }

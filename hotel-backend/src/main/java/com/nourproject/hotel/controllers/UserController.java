@@ -1,9 +1,9 @@
 package com.nourproject.hotel.controllers;
 
-
-
+import com.nourproject.hotel.dtos.Response;
 import com.nourproject.hotel.dtos.UserDto;
 import com.nourproject.hotel.dtos.UserUpdateDto;
+import com.nourproject.hotel.entities.Booking;
 import com.nourproject.hotel.entities.User;
 import com.nourproject.hotel.mappers.UserMapper;
 import com.nourproject.hotel.services.UserService;
@@ -27,119 +27,58 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getHotels(){
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.findAll());
+    public ResponseEntity<Response> getusers(){
+        return ResponseEntity.ok(this.userService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getHotelById(@PathVariable(value = "id",required = true) Long id){
-        // Let the service throw GlobalException, it will be caught by GlobalExceptionHandler
-        User user = this.userService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+    public ResponseEntity<Response> getUserById(@PathVariable(value = "id",required = true) Long id){
+     return ResponseEntity.ok(userService.findById(id));
+    }
+    @GetMapping("booking/{id}")
+    public ResponseEntity<Response> getbookingByUserId(@PathVariable(value = "id",required = true) Long id){
+   return ResponseEntity.ok(this.userService.getbookingByUserId(id));
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
-        try {
-            User user = this.userService.findByUserName(username);
-            if (user != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(user);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<Response> getUserByUsername(@PathVariable("username") String username) {
+     return ResponseEntity.ok(this.userService.findByUserName(username));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
-        try {
-            User user = this.userService.findByEmail(email);
-            if (user != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(user);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<Response> getUserByEmail(@PathVariable("email") String email) {
+  return ResponseEntity.ok(this.userService.findByEmail(email));
     }
+
+
 
     @PostMapping()
-    public ResponseEntity<User> addUser(@Valid @RequestBody UserDto userDto){
-        try {
-            // Use the sync method which handles both create and update logic
-            User user = this.userService.syncFromKeycloak(userDto);
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-    }
-
-    @PostMapping("/sync")
-    public ResponseEntity<User> syncFromKeycloak(@Valid @RequestBody UserDto userDto) {
-        try {
-            User syncedUser = this.userService.syncFromKeycloak(userDto);
-            return ResponseEntity.status(HttpStatus.OK).body(syncedUser);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<Response> createOrUpdateUser(@Valid @RequestBody UserDto userDto) {
+    return ResponseEntity.ok(this.userService.createOrUpdateUser(userDto));
     }
 
 
     @PutMapping("/{id}")
-    ResponseEntity<User> updateHotelById(@PathVariable(value = "id",required = true) Long id, @Valid @RequestBody UserUpdateDto userUpdateDto){
+    ResponseEntity<Response> updateUserById(@PathVariable(value = "id",required = true) Long id, @Valid @RequestBody UserUpdateDto userUpdateDto){
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.updateById(id,userUpdateDto)) ;
     }
     
     @PutMapping("/username/{username}")
-    public ResponseEntity<User> updateUserByUsername(@PathVariable("username") String username, @RequestBody UserUpdateDto userUpdateDto) {
-        try {
+    public ResponseEntity<Response> updateUserByUsername(@PathVariable("username") String username, @RequestBody UserUpdateDto userUpdateDataDto) {
 
-            
-            User existingUser = this.userService.findByUserName(username);
-            if (existingUser != null) {
-                User updatedUser = this.userService.updateById(existingUser.getId(), userUpdateDto);
-                return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
-            } else {
-                System.err.println("User not found: " + username);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-        } catch (Exception e) {
-            System.err.println("Error updating user: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+                User user=this.userService.getByUserName(username);
+                return ResponseEntity.ok(this.userService.updateById(user.getId(), userUpdateDataDto));
+
+
     }
     
     @DeleteMapping("/{id}")
-    ResponseEntity<User> deleteHotelById(@PathVariable(value = "id",required = true) Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.deleteById(id));
+    ResponseEntity<Response> deleteUserById(@PathVariable(value = "id",required = true) Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.deleteByUserId(id));
     }
     
-    @GetMapping("/debug/{username}")
-    public ResponseEntity<Map<String, Object>> debugUser(@PathVariable("username") String username) {
-        try {
-            User user = this.userService.findByUserName(username);
-            if (user != null) {
-                Map<String, Object> debugInfo = Map.of(
-                    "id", user.getId(),
-                    "username", user.getUserName(),
-                    "firstName", user.getFirstName() != null ? user.getFirstName() : "NULL",
-                    "lastName", user.getLastName() != null ? user.getLastName() : "NULL",
-                    "email", user.getEmail() != null ? user.getEmail() : "NULL",
-                    "hasProfileImage", user.getProfileImage() != null,
-                    "profileImageLength", user.getProfileImage() != null ? user.getProfileImage().length() : 0
-                );
-                return ResponseEntity.ok(debugInfo);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-        }
-    }
+
+
     
 
 

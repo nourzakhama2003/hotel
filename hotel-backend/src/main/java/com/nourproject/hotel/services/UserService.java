@@ -1,11 +1,18 @@
 package com.nourproject.hotel.services;
+import com.nourproject.hotel.dtos.BookingDto;
+import com.nourproject.hotel.dtos.Response;
 import com.nourproject.hotel.dtos.UserDto;
 import com.nourproject.hotel.dtos.UserUpdateDto;
+import com.nourproject.hotel.entities.Booking;
 import com.nourproject.hotel.entities.User;
+import com.nourproject.hotel.exceptions.NotFoundException;
 import com.nourproject.hotel.exceptions.GlobalException;
+import com.nourproject.hotel.mappers.BookingMapper;
 import com.nourproject.hotel.mappers.UserMapper;
+import com.nourproject.hotel.repositories.BookingRepository;
 import com.nourproject.hotel.repositories.UserRepository;
-import com.nourproject.hotel.services.KeycloakAdminService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,93 +21,149 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    UserMapper userMapper;
-    UserRepository userRepository;
-    KeycloakAdminService keycloakAdminService;
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final KeycloakAdminService keycloakAdminService;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository, KeycloakAdminService keycloakAdminService) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.keycloakAdminService = keycloakAdminService;
+
+    public Response findAll(){
+         List<UserDto> list= this.userRepository.findAll().stream().map(userMapper::userToUserDto).toList();
+         return Response.builder()
+                 .status(200)
+                 .message("list of users getted Successfully")
+                 .users(list)
+                 .build();
     }
 
-    public List<User> findAll(){
-        return this.userRepository.findAll();
+    public Response findById(Long id){
+        UserDto userDto=this.userRepository.findById(id).map(userMapper::userToUserDto)
+                .orElseThrow(() -> new NotFoundException("user with ID " + id + " not found"));
+        return Response.builder()
+                .status(200)
+                .message("user getted Successfully")
+                .user(userDto)
+                .build();
+    }
+    public Response getbookingByUserId(Long id){
+        List<BookingDto> bookings=this.bookingRepository.findByUserId(id).stream().map(bookingMapper::bookingToBookingDto).toList();
+        return Response.builder()
+                .status(200)
+                .message("user getted Successfully")
+                .bookings(bookings)
+                .build();
     }
 
-    public User findById(Long id){
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new GlobalException("user with ID " + id + " not found"));
+    public Response save(UserDto userDto ){
+        UserDto user=userMapper.userToUserDto(userRepository.save(this.userMapper.userDtoToUser(userDto)));
+        return  Response.builder()
+                .status(200)
+                .message("user saved succefuly")
+                .user(user)
+                .build();
     }
 
-    public User save(UserDto userDto ){
-        return this.userRepository.save(this.userMapper.userDtoToUser(userDto));
+    public Response findByUserName(String userName) {
+        UserDto userDto=this.userRepository.findByUserName(userName).map(userMapper::userToUserDto).orElseThrow(()->new NotFoundException("user with userName "+userName+"notFound"));
+        return Response.builder()
+                .status(200)
+                .message("user getted Successfully")
+                .user(userDto)
+                .build();
     }
-
-    public User findByUserName(String userName) {
-        return this.userRepository.findByUserName(userName).orElse(null);
+    public User getByUserName(String userName){
+        return this.userRepository.findByUserName(userName).orElseThrow(()->new NotFoundException("user with userName admin not found"));
     }
-
-    public User findByEmail(String email) {
-        return this.userRepository.findByEmail(email).orElse(null);
+    public Response findByEmail(String userName) {
+        UserDto userDto=this.userRepository.findByEmail(userName).map(userMapper::userToUserDto).orElseThrow(()->new NotFoundException("user with userName "+userName+"notFound"));
+        return Response.builder()
+                .status(200)
+                .message("user getted Successfully")
+                .user(userDto)
+                .build();
     }
-
-    public User updateByUsername(String username, UserUpdateDto userUpdateDto) {
+    public Response updateByUsername(String username, UserUpdateDto userUpdateDto) {
         User user = this.userRepository.findByUserName(username)
                 .orElseThrow(() -> new GlobalException("User with username " + username + " not found"));
-        
-        // Use updateById which now includes Keycloak sync
         return updateById(user.getId(), userUpdateDto);
     }
 
-    public User syncFromKeycloak(UserDto keycloakData) {
-        System.out.println("SYNC FROM KEYCLOAK CALLED - This might be overriding your database changes!");
-        System.out.println("Keycloak data: " + keycloakData);
-        
-        User existingUser = findByUserName(keycloakData.getUserName());
+    public Response createOrUpdateUser(UserDto userDto) {
+        // Use the safe method that returns null instead of throwing exception
+        User existingUser = this.userRepository.findByUserName(userDto.getUserName()).orElse(null);
 
         if (existingUser != null) {
-            System.out.println("Existing user found, updating from Keycloak data (THIS MIGHT OVERRIDE YOUR CHANGES)");
-            UserUpdateDto updateDto = userMapper.userDtoToUserUpdateDto(keycloakData);
+            // User exists, update them
+            UserUpdateDto updateDto = userMapper.userDtoToUserUpdateDto(userDto);
             return updateById(existingUser.getId(), updateDto);
         } else {
-            System.out.println("Creating new user from Keycloak data");
-            return save(keycloakData);
+            // User doesn't exist, create new one
+            return save(userDto);
         }
     }
 
-    public User updateById(Long id, UserUpdateDto userUpdateDto){
+    public Response updateById(Long id, UserUpdateDto userUpdateDto){
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new GlobalException("user with ID " + id + " not found"));
         this.userMapper.updateUserUpdateDtoToUser(userUpdateDto, user);
-        User updatedUser = this.userRepository.save(user);
-        try {
-            boolean syncSuccess = keycloakAdminService.updateUserCompleteProfile(
+       UserDto  updatedUser=this.userMapper.userToUserDto(this.userRepository.save(user));
+
+             keycloakAdminService.updateUserCompleteProfile(
                 updatedUser.getUserName(),
                 updatedUser.getFirstName(),
                 updatedUser.getLastName()
             );
-            
 
-        } catch (Exception e) {
-            System.err.println("Error syncing to Keycloak: " + e.getMessage());
-        }
-
-        return updatedUser;
+        return Response.builder()
+                .status(200)
+                .message("user updated Successfully")
+                .user(updatedUser)
+                .build();
     }
 
     @Transactional
-    public User deleteById(Long id){
+    public Response deleteByUserId(Long id){
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new GlobalException("user with ID " + id + " not found"));
+        
+        // Store user data for response and Keycloak deletion
+        UserDto deletedUserDto = userMapper.userToUserDto(user);
+        String userEmail = user.getEmail();
+        String username = user.getUserName();
+        
+        // Delete from local database first
         this.userRepository.delete(user);
         this.userRepository.flush();
         checkAndResetAutoIncrement();
-        return user;
+        
+        // Then delete from Keycloak using email
+        try {
+            System.out.println("Attempting to delete user from Keycloak with email: " + userEmail);
+            boolean keycloakDeleteSuccess = keycloakAdminService.deleteUserByEmail(userEmail);
+            
+            if (keycloakDeleteSuccess) {
+                System.out.println("Successfully deleted user from both database and Keycloak: " + username);
+            } else {
+                System.err.println("User deleted from database but failed to delete from Keycloak: " + username);
+                // Note: We don't rollback the database transaction even if Keycloak deletion fails
+                // This ensures data consistency (user is deleted) even if Keycloak sync fails
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting user from Keycloak: " + e.getMessage());
+            // Database deletion still succeeded, so we continue
+        }
+        
+        return Response.builder()
+                .status(200)
+                .message("user deleted Successfully")
+                .user(deletedUserDto)
+                .build();
     }
 
     @Transactional

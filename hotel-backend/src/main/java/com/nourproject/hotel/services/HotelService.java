@@ -4,61 +4,88 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.nourproject.hotel.dtos.HotelDto;
 import com.nourproject.hotel.dtos.HotelUpdateDto;
+import com.nourproject.hotel.dtos.Response;
 import com.nourproject.hotel.entities.Hotel;
 import com.nourproject.hotel.exceptions.GlobalException;
 import com.nourproject.hotel.mappers.HotelMapper;
 import com.nourproject.hotel.repositories.HotelRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class HotelService {
-    HotelRepository hotelRepository;
-    HotelMapper hotelMapper;
+    private final HotelRepository hotelRepository;
+    private final HotelMapper hotelMapper;
     
     @PersistenceContext
     private EntityManager entityManager;
-    
-    public HotelService(HotelRepository hotelRepository, HotelMapper hotelMapper) {
-        this.hotelRepository = hotelRepository;
-        this.hotelMapper = hotelMapper;
+
+    public Response findAllHotels(){
+        List<HotelDto> hotelList = this.hotelRepository.findAll()
+                .stream()
+                .map(hotelMapper::hotelToHotelDto)
+                .toList();
+        return Response.builder()
+                .status(200)
+                .message("Hotels retrieved successfully")
+                .hotels(hotelList)
+                .build();
     }
 
-    public List<Hotel> findAllHotels(){
-        return this.hotelRepository.findAll();
+    public Response findHotelById(Long id){
+        HotelDto hotelDto = this.hotelRepository.findById(id)
+                .map(hotelMapper::hotelToHotelDto)
+                .orElseThrow(() -> new GlobalException("Hotel with ID " + id + " not found"));
+        return Response.builder()
+                .status(200)
+                .message("Hotel retrieved successfully")
+                .hotel(hotelDto)
+                .build();
     }
 
-
-    public Hotel findHotelById(Long id){
-        return this.hotelRepository.findById(id)
-            .orElseThrow(() -> new GlobalException("Hotel with ID " + id + " not found"));
+    public Response saveHotel(HotelDto hotelDto){
+        Hotel hotel = this.hotelRepository.save(this.hotelMapper.dtoToHotel(hotelDto));
+        return Response.builder()
+                .status(201)
+                .message("Hotel saved successfully")
+                .hotel(hotelMapper.hotelToHotelDto(hotel))
+                .build();
     }
 
-    public Hotel saveHotel(HotelDto hoteldto ){
-        return this.hotelRepository.save(this.hotelMapper.dtoToHotel(hoteldto));
-    }
-    public Hotel updateHotelById(Long id, HotelUpdateDto hotelUpdateDto){
+    public Response updateHotelById(Long id, HotelUpdateDto hotelUpdateDto){
         Hotel hotel = this.hotelRepository.findById(id)
-            .orElseThrow(() -> new GlobalException("Hotel with ID " + id + " not found"));
-     this.hotelMapper.hotelUpdateDtoToHotel(hotelUpdateDto,hotel);
-        return this.hotelRepository.save(hotel);
+                .orElseThrow(() -> new GlobalException("Hotel with ID " + id + " not found"));
+        this.hotelMapper.hotelUpdateDtoToHotel(hotelUpdateDto, hotel);
+        Hotel updatedHotel = this.hotelRepository.save(hotel);
+        return Response.builder()
+                .status(200)
+                .message("Hotel updated successfully")
+                .hotel(hotelMapper.hotelToHotelDto(updatedHotel))
+                .build();
     }
 
 
 
     @Transactional
-    public Hotel deleteById(Long id){
+    public Response deleteById(Long id){
         Hotel hotel = this.hotelRepository.findById(id)
                 .orElseThrow(() -> new GlobalException("Hotel with ID " + id + " not found"));
         
+        HotelDto deletedHotelDto = hotelMapper.hotelToHotelDto(hotel);
         this.hotelRepository.delete(hotel);
         this.hotelRepository.flush();
         resetAutoIncrementId();
         
-        return hotel;
+        return Response.builder()
+                .status(200)
+                .message("Hotel deleted successfully")
+                .hotel(deletedHotelDto)
+                .build();
     }
 
 

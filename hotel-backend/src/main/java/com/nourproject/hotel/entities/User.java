@@ -34,7 +34,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role ;
-    private Boolean active=false;
+    private Boolean isActive=false;
     @Column(columnDefinition = "LONGTEXT")
     private String profileImage;
 @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)

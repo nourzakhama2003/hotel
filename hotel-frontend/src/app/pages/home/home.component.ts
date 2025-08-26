@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { HotelService } from "../../services/hotel.service";
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-
+import { AppResponse } from "../../constant/Response";
+import { hotel } from "../../constant/hotel";
 @Component({
     selector: 'app-home',
     standalone: true,
@@ -11,16 +12,16 @@ import { CommonModule } from '@angular/common';
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    hotels!: string;
+    hotels!: hotel[]|undefined;
     constructor(private hotelService: HotelService, private snackBar: MatSnackBar) { }
     ngOnInit(): void {
         console.log('🏠 Home component initializing...');
         console.log('🔗 About to call hotel service...');
 
         this.hotelService.getHotels().subscribe({
-            next: (data: string) => {
-
-                this.hotels = data;
+            next: (response: AppResponse) => {
+console.log("hotel response "+response);
+                this.hotels = response.hotels;
                 this.snackBar.open('Hotel data loaded successfully!', 'Fermer', { duration: 3000 });
             },
             error: (error) => {

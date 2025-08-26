@@ -89,10 +89,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.userName) {
-        
+
         this.userService.updateUserByUsername(result.userName, result).subscribe({
-          next: user => {
-         
+          next: response => {
+            // Update the local profile data immediately after successful update
+            if (response.user) {
+              this.appKeycloakService.updateLocalProfile(response.user);
+
+              // Update the profile image in header immediately
+              if (response.user.profileImage) {
+                this.profileImage = response.user.profileImage;
+              }
+            }
+
             this.matSnackBar.open('user profile mis à jour avec succès', 'Fermer', { duration: 3000 });
           },
           error: (error) => {
