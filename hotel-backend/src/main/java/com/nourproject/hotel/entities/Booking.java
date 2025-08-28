@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -37,9 +38,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private PayementStatus payementStatus;
     @DecimalMin(value = "0.1",message = "price must be greater than 0.1")
-    private double totalPrice;
-    private LocalDate checkInDate;
-    private LocalDate checkOutDate;
+    private BigDecimal totalPrice;
+    private LocalDateTime checkInDate;
+    private LocalDateTime checkOutDate;
 
 
     private String bookingRefrence;

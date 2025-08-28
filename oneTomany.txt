@@ -1,0 +1,31 @@
+One-to-Many or Many-to-One Relationships (e.g., Hotel → List<Room>)
+In your DTO for the parent (e.g., HotelDto), include a list of child DTOs (e.g., List<RoomDto> rooms).
+In your DTO for the child (e.g., RoomDto), do not include the full parent DTO (e.g., do not have HotelDto hotel). Instead, just include the parent’s ID (e.g., Long hotelId).
+2. Mapping with MapStruct
+In your mapper, use @Mapping(target = "hotelId", source = "hotel.id") to map the parent’s ID to the child DTO.
+Ignore the parent reference in the child entity mapping (@Mapping(target = "hotel", ignore = true)) and set it manually in your service if needed.
+3. Why This Is Best
+This avoids infinite loops during serialization (no circular references).
+Keeps your API responses clean and efficient.
+You can still fetch the parent entity by its ID if needed.
+4. Example
+Summary:
+
+Parent DTO: contains list of child DTOs
+Child DTO: contains only parent ID
+Mapper: map parent ID, ignore parent object, set references manually in service
+This is the most robust and beginner-friendly approach for DTO mapping in Java/Spring projects.
+
+// HotelDto
+public class HotelDto {
+    private Long id;
+    private String name;
+    private List<RoomDto> rooms;
+}
+
+// RoomDto
+public class RoomDto {
+    private Long id;
+    private String number;
+    private Long hotelId; // Only the ID, not the full HotelDto
+}

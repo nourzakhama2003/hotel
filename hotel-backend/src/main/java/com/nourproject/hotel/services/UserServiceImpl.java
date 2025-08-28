@@ -1,9 +1,8 @@
 package com.nourproject.hotel.services;
-import com.nourproject.hotel.dtos.BookingDto;
+import com.nourproject.hotel.dtos.booking.BookingDto;
 import com.nourproject.hotel.dtos.Response;
-import com.nourproject.hotel.dtos.UserDto;
-import com.nourproject.hotel.dtos.UserUpdateDto;
-import com.nourproject.hotel.entities.Booking;
+import com.nourproject.hotel.dtos.user.UserDto;
+import com.nourproject.hotel.dtos.user.UserUpdateDto;
 import com.nourproject.hotel.entities.User;
 import com.nourproject.hotel.exceptions.NotFoundException;
 import com.nourproject.hotel.exceptions.GlobalException;
@@ -12,7 +11,8 @@ import com.nourproject.hotel.mappers.UserMapper;
 import com.nourproject.hotel.repositories.BookingRepository;
 import com.nourproject.hotel.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,7 +22,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+@Slf4j
+public class UserServiceImpl implements com.nourproject.hotel.services.interfaces.UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
@@ -34,7 +35,8 @@ public class UserService {
 
 
     public Response findAll(){
-         List<UserDto> list= this.userRepository.findAll().stream().map(userMapper::userToUserDto).toList();
+         List<UserDto> list= this.userRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream().map(userMapper::userToUserDto).toList();
+
          return Response.builder()
                  .status(200)
                  .message("list of users getted Successfully")

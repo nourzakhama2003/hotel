@@ -1,19 +1,16 @@
 package com.nourproject.hotel.controllers;
 
 import com.nourproject.hotel.dtos.Response;
-import com.nourproject.hotel.dtos.UserDto;
-import com.nourproject.hotel.dtos.UserUpdateDto;
-import com.nourproject.hotel.entities.Booking;
+import com.nourproject.hotel.dtos.user.UserDto;
+import com.nourproject.hotel.dtos.user.UserUpdateDto;
 import com.nourproject.hotel.entities.User;
 import com.nourproject.hotel.mappers.UserMapper;
-import com.nourproject.hotel.services.UserService;
+import com.nourproject.hotel.services.UserServiceImpl;
+import com.nourproject.hotel.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/public/users")
@@ -21,11 +18,11 @@ public class UserController {
     private final UserMapper userMapper;
     UserService userService;
 
-    public UserController(UserService userService, UserMapper userMapper ) {
+    public UserController(UserServiceImpl userService, UserMapper userMapper ) {
         this.userService = userService;
         this.userMapper = userMapper;
     }
-
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ResponseEntity<Response> getusers(){
         return ResponseEntity.ok(this.userService.findAll());

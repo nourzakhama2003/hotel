@@ -2,6 +2,7 @@ package com.nourproject.hotel.exceptions;
 import com.nourproject.hotel.dtos.Response;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,14 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Response> handleMethodArgumentNotValidException(Exception ex) {
+        Response response=Response.builder()
+                .status(HttpStatus.SC_BAD_REQUEST)
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.SC_BAD_REQUEST).body(response);
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Response> handleHttpMessageNotReadableException(Exception ex) {
         Response response=Response.builder()
                 .status(HttpStatus.SC_BAD_REQUEST)
                 .message(ex.getMessage())

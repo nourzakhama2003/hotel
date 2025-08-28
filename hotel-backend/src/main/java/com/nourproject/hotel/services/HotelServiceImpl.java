@@ -2,8 +2,8 @@ package com.nourproject.hotel.services;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.nourproject.hotel.dtos.HotelDto;
-import com.nourproject.hotel.dtos.HotelUpdateDto;
+import com.nourproject.hotel.dtos.hotel.HotelDto;
+import com.nourproject.hotel.dtos.hotel.HotelUpdateDto;
 import com.nourproject.hotel.dtos.Response;
 import com.nourproject.hotel.entities.Hotel;
 import com.nourproject.hotel.exceptions.GlobalException;
@@ -12,21 +12,22 @@ import com.nourproject.hotel.repositories.HotelRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HotelService {
+public class HotelServiceImpl implements com.nourproject.hotel.services.interfaces.HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
     
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Response findAllHotels(){
-        List<HotelDto> hotelList = this.hotelRepository.findAll()
+    public Response findAll(){
+        List<HotelDto> hotelList = this.hotelRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
                 .stream()
                 .map(hotelMapper::hotelToHotelDto)
                 .toList();
@@ -47,6 +48,7 @@ public class HotelService {
                 .hotel(hotelDto)
                 .build();
     }
+
 
     public Response saveHotel(HotelDto hotelDto){
         Hotel hotel = this.hotelRepository.save(this.hotelMapper.dtoToHotel(hotelDto));

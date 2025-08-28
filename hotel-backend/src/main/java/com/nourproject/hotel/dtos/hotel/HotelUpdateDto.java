@@ -1,27 +1,19 @@
-package com.nourproject.hotel.dtos;
+package com.nourproject.hotel.dtos.hotel;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nourproject.hotel.enums.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Data
 @AllArgsConstructor
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public class RoomUpdateDto {
-
+public class HotelUpdateDto {
     private Long id;
-    private int roomNumber;
-    private int capacity;
-    private RoomType type;
-    private double pricePerNight;
-    private String description;
-    private String roomImage;
+    private String hotelName;  // ← Make fields private with @Data
 }

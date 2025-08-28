@@ -1,4 +1,4 @@
-package com.nourproject.hotel.dtos;
+package com.nourproject.hotel.dtos.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

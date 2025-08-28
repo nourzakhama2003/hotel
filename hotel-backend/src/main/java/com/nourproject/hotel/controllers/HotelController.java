@@ -1,19 +1,16 @@
 package com.nourproject.hotel.controllers;
 
-import com.nourproject.hotel.dtos.HotelDto;
-import com.nourproject.hotel.dtos.HotelUpdateDto;
+import com.nourproject.hotel.dtos.hotel.HotelDto;
+import com.nourproject.hotel.dtos.hotel.HotelUpdateDto;
 import com.nourproject.hotel.dtos.Response;
-import com.nourproject.hotel.entities.Hotel;
 import com.nourproject.hotel.mappers.HotelMapper;
-import com.nourproject.hotel.services.HotelService;
+import com.nourproject.hotel.services.HotelServiceImpl;
+import com.nourproject.hotel.services.interfaces.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/public/hotels")
@@ -24,13 +21,14 @@ public class HotelController {
 
     @GetMapping()
     public ResponseEntity<Response> getHotels(){
-        return ResponseEntity.ok(this.hotelService.findAllHotels());
+        return ResponseEntity.ok(this.hotelService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Response> getHotelById(@PathVariable(value = "id", required = true) Long id){
         return ResponseEntity.ok(this.hotelService.findHotelById(id));
     }
+
 
     @PostMapping()
     public ResponseEntity<Response> addHotel(@Valid @RequestBody HotelDto hotelDto){

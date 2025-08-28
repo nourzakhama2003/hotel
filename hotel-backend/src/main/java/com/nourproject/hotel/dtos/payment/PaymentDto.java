@@ -1,9 +1,10 @@
-package com.nourproject.hotel.dtos;
+package com.nourproject.hotel.dtos.payment;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.nourproject.hotel.dtos.booking.BookingDto;
 import com.nourproject.hotel.enums.PayementGateway;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ import java.time.LocalDateTime;
 public class PaymentDto {
     private Long Id;
     private BookingDto booking;
+
+
     private String transactionId;
     private double amount;
     private  LocalDateTime paymentDate;

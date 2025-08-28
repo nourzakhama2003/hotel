@@ -1,6 +1,6 @@
 package com.nourproject.hotel.notifications;
 
-import com.nourproject.hotel.dtos.NotificationDto;
+import com.nourproject.hotel.dtos.notification.NotificationDto;
 
 public interface NotificationService {
     void sendEmail(NotificationDto notification);

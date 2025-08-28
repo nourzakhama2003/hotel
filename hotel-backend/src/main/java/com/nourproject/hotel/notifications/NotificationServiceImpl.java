@@ -1,6 +1,6 @@
 package com.nourproject.hotel.notifications;
 
-import com.nourproject.hotel.dtos.NotificationDto;
+import com.nourproject.hotel.dtos.notification.NotificationDto;
 import com.nourproject.hotel.entities.Notification;
 import com.nourproject.hotel.enums.NotificationType;
 import com.nourproject.hotel.repositories.NotificationRepository;

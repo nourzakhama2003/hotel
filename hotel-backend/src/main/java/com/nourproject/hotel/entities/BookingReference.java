@@ -17,6 +17,6 @@ public class BookingReference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique=true,nullable=false)
-    private String refrenceNo;
+    @Column(name = "reference_no", unique=true, nullable=false)
+    private String referenceNo;
 }

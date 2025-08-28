@@ -1,7 +1,7 @@
 package com.nourproject.hotel.mappers;
 
-import com.nourproject.hotel.dtos.HotelDto;
-import com.nourproject.hotel.dtos.HotelUpdateDto;
+import com.nourproject.hotel.dtos.hotel.HotelDto;
+import com.nourproject.hotel.dtos.hotel.HotelUpdateDto;
 import com.nourproject.hotel.entities.Hotel;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;

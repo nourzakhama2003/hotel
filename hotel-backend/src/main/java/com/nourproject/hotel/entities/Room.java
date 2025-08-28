@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class Room {
   @Enumerated(EnumType.STRING)
   private RoomType type;
   @DecimalMin(value = "0.1",message = "price must be greater than 0.1")
-  private double pricePerNight;
+  private BigDecimal pricePerNight;
   private String description;
     @ManyToOne
     @JoinColumn(name="hotel_id")
@@ -42,7 +44,7 @@ public class Room {
     @OneToMany(mappedBy = "room",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Booking> bookingList=new ArrayList<>();
 
-
+  private  LocalDateTime createAt;
     @Column(columnDefinition = "LONGTEXT")
     private String roomImage;
 

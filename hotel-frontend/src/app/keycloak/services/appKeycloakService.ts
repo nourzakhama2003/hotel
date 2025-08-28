@@ -103,19 +103,18 @@ export class AppKeycloakService {
           // First check if user exists in database
           this.userService.getUserByUsername(this._profile.userName).subscribe({
             next: (response: AppResponse) => {
-              // User exists, use database profile data
-              console.log("User found in database, using database profile");
+          
               this._profile = { ...this._profile, ...response?.user };
               this._profileSubject.next(this._profile);
+              console.log("token :",this._profile.token);
             },
             error: (error: any) => {
               if (error.status === 404) {
-                // User doesn't exist in database, try to create them
-                console.log("User not found in database, attempting to create");
+              
                 if (this._profile) {
                   this.userService.createOrUpdateUser(this._profile).subscribe({
                     next: (createResponse: AppResponse) => {
-                      console.log("User successfully created in database");
+                   
                       this._profile = createResponse?.user;
                       this._profileSubject.next(this._profile);
                     },
@@ -126,8 +125,7 @@ export class AppKeycloakService {
                   });
                 }
               } else {
-                // Other error, just use Keycloak profile
-                console.warn('Database error, using Keycloak profile only:', error);
+               
                 this._profileSubject.next(this._profile);
               }
             }

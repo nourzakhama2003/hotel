@@ -3,6 +3,12 @@ package com.nourproject.hotel.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nourproject.hotel.dtos.booking.BookingDto;
+import com.nourproject.hotel.dtos.hotel.HotelDto;
+import com.nourproject.hotel.dtos.notification.NotificationDto;
+import com.nourproject.hotel.dtos.payment.PaymentDto;
+import com.nourproject.hotel.dtos.room.RoomDto;
+import com.nourproject.hotel.dtos.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

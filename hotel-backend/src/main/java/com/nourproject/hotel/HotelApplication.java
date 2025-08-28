@@ -1,6 +1,6 @@
 package com.nourproject.hotel;
 
-import com.nourproject.hotel.dtos.NotificationDto;
+import com.nourproject.hotel.dtos.notification.NotificationDto;
 import com.nourproject.hotel.notifications.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

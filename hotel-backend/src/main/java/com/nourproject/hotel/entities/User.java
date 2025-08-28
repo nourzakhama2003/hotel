@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @AllArgsConstructor
@@ -23,11 +24,11 @@ public class User {
 
     @NotBlank(message="user name required")
     @Column(unique = true)
-    private String userName;
+    private  String userName;
 
     @NotBlank(message="email  required")
     @Column(unique = true)
-    private String  email;
+    private  String  email;
     private String firstName;
     private String lastName;
 
@@ -37,6 +38,8 @@ public class User {
     private Boolean isActive=false;
     @Column(columnDefinition = "LONGTEXT")
     private String profileImage;
+
+    private final LocalDateTime createAt=LocalDateTime.now();
 @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
 private List <Booking> bookingList=new ArrayList<>();
 

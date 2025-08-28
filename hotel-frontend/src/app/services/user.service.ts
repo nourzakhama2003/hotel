@@ -8,14 +8,14 @@ import { AppResponse }from "../constant/Response";
     providedIn: 'root'
 })
 export class UserService {
-    URL = `${environment.API_URL}/public/users`;
+    URL = `${environment.API_URL}/user/users`;
     constructor(private http: HttpClient) { }
 
     getAll(): Observable<AppResponse> {
         return this.http.get<AppResponse>(this.URL);
 
     }
-    
+
 
 
     // add(userProfile: Partial<UserProfile>): Observable<UserProfile> {

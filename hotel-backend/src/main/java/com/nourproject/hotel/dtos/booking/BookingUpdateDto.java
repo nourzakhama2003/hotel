@@ -1,4 +1,4 @@
-package com.nourproject.hotel.dtos;
+package com.nourproject.hotel.dtos.booking;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,23 +10,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = false)
 @Builder
 public class BookingUpdateDto {
 
-    private Long id;
-    private UserDto user;
-    private RoomDto room;
+
     private PayementStatus payementStatus;
-    private double totalPrice;
-    private LocalDate checkInDate;
-    private LocalDate checkOutDate;
-    private String bookingRefrence;
     private BookingStatus bookingStatus;
 }

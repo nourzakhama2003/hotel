@@ -1,7 +1,12 @@
 package com.nourproject.hotel.repositories;
 
 import com.nourproject.hotel.entities.Payment;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PaymentRepository extends CrudRepository<Payment, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    Optional<Payment> findByTransactionId(String transactionId);
+    List<Payment> findByBookingRefrence(String bookingReference);
 }
