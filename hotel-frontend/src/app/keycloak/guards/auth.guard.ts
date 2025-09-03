@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
 
       
         const hasAccess = routeRoles.some(
-            role => role.toLowerCase() === userRoles.toLowerCase()
+            role => userRoles.toLowerCase() === role.toLowerCase()
         );
         if (hasAccess) {
             return true;

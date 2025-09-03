@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { links } from '../../constant/constants';
+import { links } from '../../models/constants';
 import { CommonModule } from '@angular/common';
 import { AppKeycloakService } from '../../keycloak/services/appKeycloakService';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -23,9 +23,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private appKeycloakService: AppKeycloakService, private matDialog: MatDialog, private userService: UserService, private matSnackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    console.log("tets profile image", this.appKeycloakService.profile?.profileImage);
 
-    // Subscribe to profile changes to get the profileImage when it's available
     this.profileSubscription = this.appKeycloakService.profileObservable.subscribe(profile => {
       if (profile?.profileImage) {
 
@@ -60,9 +58,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toggleProfileDropdown() {
-    console.log('Toggle clicked! Current state:', this.isProfileDropdownOpen);
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
-    console.log('New state:', this.isProfileDropdownOpen);
+
   }
 
 
@@ -108,9 +105,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.matSnackBar.open('erreur lors de la mise à jour du profil', 'Fermer', { duration: 3000 });
           }
         });
-      } else {
-        console.log('Dialog was closed without updating (result is null or no userName)');
-      }
+      } 
     });
   }
 }

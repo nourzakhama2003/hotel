@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { KeycloakService } from 'keycloak-angular';
-import { UserProfile } from "../../constant/userProfile";
+import { UserProfile } from "../../models/userProfile";
 import { UserService } from "../../services/user.service";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AppResponse } from "../../constant/Response";
+import { AppResponse } from "../../models/Response";
+import { UserRole } from "../../models/enums/userRole";
 @Injectable({
   providedIn: 'root'
 })
@@ -75,7 +76,7 @@ export class AppKeycloakService {
     return auth;
   }
 
-  async loadUserProfile(): Promise<void> {
+  async  loadUserProfile(): Promise<void> {
     try {
       // Get user information from the token instead of making API call
       const tokenParsed = this._KeycloakService.getKeycloakInstance().tokenParsed;
@@ -84,10 +85,10 @@ export class AppKeycloakService {
 
 
       if (tokenParsed) {
-        const role = tokenParsed['realm_access']?.roles || "";
-        let userRole = "User"; // Match your backend enum exactly
-        if (role.includes("admin")) {
-          userRole = "Admin"; // Match your backend enum exactly
+        const keycloakRole = tokenParsed['realm_access']?.roles || "";
+        let userRole = UserRole.User; // Match your backend enum exactly
+        if (keycloakRole.includes("admin")) {
+          userRole = UserRole.Admin; // Match your backend enum exactly
         }
 
         this._profile = {
@@ -103,18 +104,19 @@ export class AppKeycloakService {
           // First check if user exists in database
           this.userService.getUserByUsername(this._profile.userName).subscribe({
             next: (response: AppResponse) => {
-          
+
               this._profile = { ...this._profile, ...response?.user };
               this._profileSubject.next(this._profile);
-              console.log("token :",this._profile.token);
+ 
             },
             error: (error: any) => {
               if (error.status === 404) {
-              
+
                 if (this._profile) {
+
                   this.userService.createOrUpdateUser(this._profile).subscribe({
                     next: (createResponse: AppResponse) => {
-                   
+
                       this._profile = createResponse?.user;
                       this._profileSubject.next(this._profile);
                     },
@@ -125,7 +127,7 @@ export class AppKeycloakService {
                   });
                 }
               } else {
-               
+
                 this._profileSubject.next(this._profile);
               }
             }
@@ -183,28 +185,5 @@ export class AppKeycloakService {
     console.log('Local profile updated:', this._profile);
   }
 
-  /**
-   * Reloads user profile from Keycloak after updates
-   * This method refreshes the token and reloads profile data
-   */
-  // async reloadUserProfile(): Promise<void> {
-  //   try {
-  //     // Force token refresh to get updated claims from Keycloak
-  //     const refreshed = await this._KeycloakService.getKeycloakInstance().updateToken(5);
 
-  //     if (refreshed) {
-  //       console.log('Token refreshed successfully');
-  //     } else {
-  //       console.log('Token is still valid');
-  //     }
-
-  //     // Reload the user profile with fresh token data
-  //     await this.loadUserProfile();
-
-  //   } catch (error) {
-  //     console.error('Failed to refresh token and reload profile:', error);
-  //     // If refresh fails, try to reload profile anyway
-  //     await this.loadUserProfile();
-  //   }
-  // }
 }

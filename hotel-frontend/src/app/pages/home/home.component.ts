@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { HotelService } from "../../services/hotel.service";
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
-import { AppResponse } from "../../constant/Response";
-import { hotel } from "../../constant/hotel";
+import { AppResponse } from "../../models/Response";
+import { hotel } from "../../models/hotel";
 @Component({
     selector: 'app-home',
     standalone: true,
@@ -12,22 +12,29 @@ import { hotel } from "../../constant/hotel";
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    hotels!: hotel[]|undefined;
+    isLoading=false;
+    message="";
+    hotels!: hotel[] | undefined;
     constructor(private hotelService: HotelService, private snackBar: MatSnackBar) { }
     ngOnInit(): void {
-        console.log('🏠 Home component initializing...');
-        console.log('🔗 About to call hotel service...');
+        this.loadHotels();
 
+    }
+
+
+
+    loadHotels(){
+        this.isLoading=true;
         this.hotelService.getHotels().subscribe({
-            next: (response: AppResponse) => {
-console.log("hotel response "+response);
-                this.hotels = response.hotels;
-                this.snackBar.open('Hotel data loaded successfully!', 'Fermer', { duration: 3000 });
-            },
-            error: (error) => {
+           next:(response:AppResponse)=>{
+            this.hotels=response.hotels;
+            this.isLoading=false;
+           } ,
+           error:(err)=>{
+            this.message=err.error.message|| 'can t get hotels';
+            this.isLoading=false;
 
-                this.snackBar.open(`Erreur lors du chargement du hotel (${error.status || 'Unknown'})`, 'Fermer', { duration: 3000 });
-            }
+           }
         })
     }
 

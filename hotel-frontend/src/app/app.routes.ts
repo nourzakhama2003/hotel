@@ -15,8 +15,8 @@ export const routes: Routes = [
         path: '',
         component: MainLayoutComponent,
         children: [
-        // Default redirect
-            { path: 'home', component: HomeComponent },
+      
+            { path: '', component: HomeComponent },
             { path: 'details', component: DetailsComponent, data: { roles: ['admin'] }, canActivate: [AuthGuard] },
             {path:'profile',component:ProfileComponent ,data:{roles:['user']}}
         ]

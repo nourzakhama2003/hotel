@@ -14,7 +14,8 @@ import { UserService } from './services/user.service';
 export class AppComponent implements OnInit {
   constructor(private userService:UserService,private appkeycloakService:AppKeycloakService){}
 ngOnInit(): void {
-console.log("app component profile" ,this.appkeycloakService.profile);
+// console.log("app component user profile" ,this.appkeycloakService.profile);
+// console.log('token:'+this.appkeycloakService.profile?.token);
  
 }
 }

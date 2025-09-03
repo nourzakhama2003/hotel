@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { UserProfile } from "../constant/userProfile";
+import { UserProfile } from "../models/userProfile";
 import { environment } from "../../enviorments/enviorment";
-import { AppResponse }from "../constant/Response";
+import { AppResponse } from "../models/Response";
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    URL = `${environment.API_URL}/user/users`;
+    URL = `${environment.API_URL}/public/users`;
     constructor(private http: HttpClient) { }
 
     getAll(): Observable<AppResponse> {
@@ -35,11 +35,8 @@ export class UserService {
     updateUserByUsername(username: string, profile: Partial<UserProfile>): Observable<AppResponse> {
 
         const updateData = {
-            userName: profile.userName,
-            email: profile.email,
             firstName: profile.firstName,
             lastName: profile.lastName,
-            role: profile.role,
             profileImage: profile.profileImage
         };
         return this.http.put<AppResponse>(`${this.URL}/username/${username}`, updateData);

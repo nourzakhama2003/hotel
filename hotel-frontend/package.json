@@ -20,8 +20,11 @@
     "@angular/platform-browser-dynamic": "^20.1.7",
     "@angular/router": "^20.1.7",
     "@angular/ssr": "^20.1.6",
+    "@stripe/stripe-js": "^7.9.0",
+    "bootstrap": "^5.3.8",
     "keycloak-angular": "^20.0.0",
     "keycloak-js": "^26.2.0",
+    "ngx-stripe": "^20.7.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
