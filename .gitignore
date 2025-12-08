@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+chatbot-service/venv/
+face-recognition-service/.venv/
+# Environment files
+.env
+!.env-dev
+!.env-prod
+!src/environments/enviornment.ts
+enviornments/*
+.actions/
+
+# Keycloak secrets
+keycloak/keyclaok-import/realm-config.json
+
+# Angular build output
+dist/
+out-tsc/
+target/
+# IDE/OS files
+.vscode/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode
+

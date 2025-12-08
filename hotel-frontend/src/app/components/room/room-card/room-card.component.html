@@ -1,0 +1,143 @@
+<div class="room-card-container">
+  <!-- Room Card -->
+  <div class="room-card group">
+    <!-- Image Container with Overlay -->
+    <div class="image-container relative overflow-hidden">
+      <img
+        class="room-image"
+        [src]="room.roomImage || '/assets/images/hotelDefault.jpg'"
+        [alt]="'Room ' + room.roomNumber"
+        loading="lazy"
+      />
+
+      <!-- Image Overlay with Gradient -->
+      <div class="image-overlay"></div>
+
+      <!-- Hotel Name Badge -->
+      <div class="room-number-badge">
+        @if (allRooms && hotel && hotel.hotelName) {
+          {{ hotel.hotelName }}
+        } @else if (isLoading) {
+          Loading...
+        } @else {
+          room Number {{ room.roomNumber }}
+        }
+      </div>
+
+      <!-- Price Badge -->
+      <div class="price-badge">
+        <span class="price-currency">$</span>
+        <span class="price-amount">{{ room.pricePerNight }}</span>
+        <span class="price-period">/night</span>
+      </div>
+    </div>
+
+    <!-- Card Content -->
+    <div class="card-content">
+      <!-- Room Header -->
+      <div class="room-header">
+        <div class="room-title-section">
+          <h3 class="room-type">{{ room.type }}</h3>
+         @if(allRooms){ <p class="room-number-display">Room {{ room.roomNumber }}</p>}
+        </div>
+
+        <div class="capacity-badge">
+          <svg class="capacity-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
+            />
+          </svg>
+          {{ room.capacity }} {{ room.capacity === 1 ? "Person" : "People" }}
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="room-description">
+        {{ room.description }}
+      </p>
+
+      <!-- Room Features/Amenities -->
+      <div class="room-features">
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+            />
+          </svg>
+          {{ room.type }} Room
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Available Today
+        </div>
+      </div>
+    </div>
+ <div class="card-action flex justify-center items-center">
+        <button
+        [routerLink]="['/hotel/room/',room.id]"
+        class="action-btn  border p-3 bg-blue-500 rounded-e-md max-w-[30%] m-2"
+       
+        title="book Room"
+      >
+       <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 512 512" fill="black">
+  <!-- Panneau Booking -->
+  <rect x="64" y="64" width="384" height="128" rx="24" ry="24" stroke="black" stroke-width="20" fill="none"/>
+  
+  <!-- Texte -->
+  <text x="256" y="145" text-anchor="middle" font-size="70" font-family="Verdana, Arial, sans-serif" font-weight="bold">
+    BOOKING
+  </text>
+  
+  <!-- Main qui clique -->
+  <path d="M200 220c-15 0-28 12-28 28 0 4 1 8 3 12l28 50c18 32 50 50 90 50 24 0 46-8 64-24s28-36 34-58l-16-58c-3-12-15-20-28-17-6 2-12 5-14 10v-10c0-14-11-25-25-25-8 0-16 5-20 11-3-11-12-18-23-18-10 0-18 5-23 13-5-9-14-15-25-15z" 
+        stroke="black" stroke-width="14" fill="none"/>
+</svg>
+        book
+      </button>
+      </div>
+    <!-- Action Buttons -->
+    @if (admin) {
+    <div class="card-actions">
+      <button
+        class="action-btn edit-btn"
+        (click)="update(room)"
+        title="Edit Room"
+      >
+        <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+          />
+        </svg>
+        Edit
+      </button>
+      <button
+        class="action-btn delete-btn"
+        (click)="delete(room.id)"
+        title="Delete Room"
+      >
+        <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"
+            clip-rule="evenodd"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 6.707 8.293a1 1 0 00-1.414 1.414L8.586 12l-3.293 3.293a1 1 0 101.414 1.414L9 13.414l2.293 2.293a1 1 0 001.414-1.414L9.414 12l3.293-3.293z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Delete
+      </button>
+    </div>
+    }
+     
+    
+  </div>
+</div>

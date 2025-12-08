@@ -1,0 +1,185 @@
+<div class="all-rooms-page-container">
+  <!-- Page Header Section -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="page-title-section">
+        <h1 class="page-title">
+          <span class="title-icon">🏢</span>
+          All Rooms Overview
+        </h1>
+        <p class="page-subtitle">
+          Comprehensive view of all available rooms across all hotels
+        </p>
+      </div>
+
+      <!-- Page Statistics -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">🏠</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ rooms.length }}</span>
+            <span class="stat-label">Total Rooms</span>
+          </div>
+        </div>
+        <div class="stat-card available">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getAvailableRoomsCount() }}</span>
+            <span class="stat-label">Available</span>
+          </div>
+        </div>
+        <div class="stat-card premium">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getPremiumRoomsCount() }}</span>
+            <span class="stat-label">Premium</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Actions Section -->
+  <div class="search-actions-container">
+    <div class="search-section">
+      <div class="search-header">
+        <h2 class="search-title">
+          <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Search & Filter All Rooms
+        </h2>
+        <p class="search-description">
+          Find rooms across all hotels by filtering by type, price, and
+          availability
+        </p>
+      </div>
+
+      <div class="search-content">
+        <app-room-search
+          (onSearch)="searchAvailableRooms($event)"
+        ></app-room-search>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <button class="add-room-btn" (click)="addRoom()" title="Add New Room">
+        <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <span class="btn-text">Add New Room</span>
+      </button>
+
+      <!-- Additional Quick Actions -->
+      <div class="quick-actions">
+        <button class="quick-action-btn export-btn" title="Export Data">
+          <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Export
+        </button>
+
+        <button class="quick-action-btn filter-btn" title="Advanced Filters">
+          <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-content">
+        <app-spinner></app-spinner>
+        <h3 class="loading-title">Loading All Rooms...</h3>
+        <p class="loading-description">
+          Please wait while we fetch room information from all hotels
+        </p>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
+      <div class="empty-state-content">
+        <div class="empty-icon">🏢</div>
+        <h3 class="empty-title">No Rooms Available</h3>
+        <p class="empty-description">
+          There are currently no rooms available across all hotels. Start by
+          adding some hotels and rooms to get started.
+        </p>
+        <div class="empty-actions">
+          <button class="empty-action-btn primary" (click)="addRoom()">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Add Your First Room
+          </button>
+          <button class="empty-action-btn secondary" routerLink="/home">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+              />
+            </svg>
+            Go to Hotels
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rooms List -->
+    <div *ngIf="!isLoading && rooms.length > 0" class="rooms-list-container">
+      <div class="rooms-list-header">
+        <h2 class="list-title">All Available Rooms</h2>
+        <div class="list-controls">
+          <span class="results-count"
+            >{{ rooms.length }} room{{
+              rooms.length !== 1 ? "s" : ""
+            }}
+            found</span
+          >
+          <div class="view-controls">
+            <button class="view-toggle active" title="Grid View">
+              <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <app-room-list
+        [rooms]="rooms"
+        [allRooms]="true"
+        (onUpdate)="update($event)"
+        (onDelete)="delete($event)"
+      >
+      </app-room-list>
+    </div>
+  </div>
+</div>

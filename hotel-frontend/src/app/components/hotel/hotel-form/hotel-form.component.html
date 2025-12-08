@@ -1,0 +1,101 @@
+<div class="form-container">
+  <h1 mat-dialog-title>{{ isEditing ? "update " : "add " }}hotel form</h1>
+  <form [formGroup]="hotelForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+      <!-- Professional Image Upload Section -->
+      <div class="group">
+        <label>Hotel Image</label>
+        <div class="image-upload-section">
+          <!-- Show current image if one is selected -->
+          <div *ngIf="selectedImage" class="current-image">
+            <img [src]="selectedImage" alt="Selected hotel image" />
+            <button
+              type="button"
+              class="remove-image-btn"
+              (click)="removeImage()"
+              title="Remove image"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Upload area (shown when no image is selected OR always visible) -->
+          <div *ngIf="!selectedImage" class="upload-area">
+            <label for="image-upload" class="upload-label">
+              <!-- Upload icon (you can replace with mat-icon if you have Material Icons) -->
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">Click to upload hotel image</div>
+              <div class="upload-hint">PNG, JPG up to 10MB</div>
+            </label>
+            <input
+              id="image-upload"
+              type="file"
+              class="hidden-input"
+              (change)="onFileSelected($event)"
+              accept="image/*"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotel Name Input Section -->
+      <div class="group">
+        <label for="name">Hotel Name</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="hotelName"
+          placeholder="Enter hotel name"
+          required
+        />
+        <div
+          *ngIf="
+            hotelForm.get('hotelName')?.invalid &&
+            hotelForm.get('hotelName')?.touched
+          "
+          class="error"
+        >
+          Hotel name is required
+        </div>
+      </div>
+       <div class="group">
+        <label for="location">Hotel Location</label>
+        <input
+          id="location"
+          type="text"
+          formControlName="hotelLocation"
+          placeholder="Enter hotel location"
+          required
+        />
+        <div
+          *ngIf="
+            hotelForm.get('hotelLocation')?.invalid &&
+            hotelForm.get('hotelLocation')?.touched
+          "
+          class="error"
+        >
+          Hotel hotelLocation is required
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button
+        type="button"
+        class="p-2 bg-red-500 text-white rounded-md"
+        (click)="close()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="p-2 bg-blue-500 text-white rounded-md flex items-center gap-2"
+        [disabled]="isLoading"
+      >
+        <span>{{
+          isLoading ? "Loading..." : isEditing ? "Update" : "Submit"
+        }}</span>
+        <app-spinner *ngIf="isLoading"></app-spinner>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

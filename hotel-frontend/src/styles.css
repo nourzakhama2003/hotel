@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Stripe Element Text Visibility Fix - Maximum Contrast */
+.__PrivateStripeElement,
+.__PrivateStripeElement input,
+.__PrivateStripeElement-input,
+.StripeElement,
+.StripeElement input {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  caret-color: #000000 !important;
+  text-shadow: none !important;
+  font-weight: 500 !important;
+}
+
+/* Force iframe background to white */
+iframe[name^="__privateStripeFrame"] {
+  background: #ffffff !important;
+}
+
+/* Override any dark theme interference */
+.dark .__PrivateStripeElement,
+.dark .__PrivateStripeElement input,
+.dark .StripeElement input {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #ffffff !important;
+}
+
+
+
+/*=== MODERN TOAST NOTIFICATION SYSTEM ===*/
+
+/* Global Toast Position - Top Right (Modern Standard) */
+.toast-b {
+  top: 20px !important;
+  right: 20px !important;
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+/* Base Toast Styling - Modern & User Friendly */
+.toast-s {
+  min-width: 350px !important;
+  max-width: 400px !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  border-left: 5px solid !important;
+  backdrop-filter: blur(10px) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  animation: slideInRight 0.3s ease-out !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Success Toast Styling */
+.toast-success.toast-s {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border-left-color: #047857 !important;
+  color: white !important;
+}
+
+/* Error Toast Styling */
+.toast-error.toast-s {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-left-color: #b91c1c !important;
+  color: white !important;
+}
+
+/* Warning Toast Styling */
+.toast-warning.toast-s {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  border-left-color: #b45309 !important;
+  color: white !important;
+}
+
+/* Info Toast Styling */
+.toast-info.toast-s {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border-left-color: #1d4ed8 !important;
+  color: white !important;
+}
+
+/* Toast Title Styling */
+.toast-s .toast-title {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin-bottom: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Toast Message Styling */
+.toast-s .toast-message {
+  opacity: 0.95 !important;
+  margin-top: 4px !important;
+}
+
+/* Close Button Styling */
+.toast-s .toast-close-button {
+  position: absolute !important;
+  top: 8px !important;
+  right: 12px !important;
+  background: transparent !important;
+  border: none !important;
+  color: white !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.toast-s .toast-close-button:hover {
+  opacity: 1 !important;
+}
+
+/* Progress Bar Styling */
+.toast-s .toast-progress {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  height: 4px !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Toast Container */
+#toast-container {
+  z-index: 10000 !important;
+}
+
+/* Hover Effects */
+.toast-s:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+}
+
+html, body { 
+  height: 100%; 
+  background: #f8fafc !important;
+}
+body { margin: 0;
+   font-family: Roboto, "Helvetica Neue", sans-serif;
+   /* Global background applied to both html and body */ }
+
+/* Ensure Angular app root also gets the background */
+app-root {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+

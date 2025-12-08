@@ -1,0 +1,112 @@
+<!-- Modern My Bookings Page -->
+<div class="my-bookings-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">My Bookings</h1>
+      <p class="page-subtitle">Manage and track all your hotel reservations</p>
+    </div>
+    <div class="stats-overview" *ngIf="!isLoading && bookings.length > 0">
+      <div class="stat-item">
+        <span class="stat-number">{{ upcomingBookings.length }}</span>
+        <span class="stat-label">Upcoming</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ activeBookings.length }}</span>
+        <span class="stat-label">Active</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">{{ pastBookings.length }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p class="loading-text">Loading your bookings...</p>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && bookings.length === 0">
+    <div class="empty-content">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"
+        />
+      </svg>
+      <h2 class="empty-title">No bookings yet</h2>
+      <p class="empty-description">
+        Start exploring amazing hotels and make your first reservation!
+      </p>
+      <button class="explore-btn" routerLink="/home">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+          />
+        </svg>
+        Explore Hotels
+      </button>
+    </div>
+  </div>
+
+  <!-- Bookings Content -->
+  <div class="bookings-content" *ngIf="!isLoading && bookings.length > 0">
+    <!-- Active Bookings Section -->
+    <div class="bookings-section" *ngIf="activeBookings.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon active">🏨</span>
+          Currently Staying
+        </h2>
+        <span class="section-count">{{ activeBookings.length }}</span>
+      </div>
+      <div class="bookings-grid">
+        <app-booking-card
+          *ngFor="let booking of activeBookings"
+          [booking]="booking"
+        >
+        </app-booking-card>
+      </div>
+    </div>
+
+    <!-- Upcoming Bookings Section -->
+    <div class="bookings-section" *ngIf="upcomingBookings.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon upcoming">📅</span>
+          Upcoming Trips
+        </h2>
+        <span class="section-count">{{ upcomingBookings.length }}</span>
+      </div>
+      <div class="bookings-grid">
+        <app-booking-card
+          *ngFor="let booking of upcomingBookings"
+          [booking]="booking"
+        >
+        </app-booking-card>
+      </div>
+    </div>
+
+    <!-- Past Bookings Section -->
+    <div class="bookings-section" *ngIf="pastBookings.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="title-icon past">📋</span>
+          Past Bookings
+        </h2>
+        <span class="section-count">{{ pastBookings.length }}</span>
+      </div>
+      <div class="bookings-grid">
+        <app-booking-card
+          *ngFor="let booking of pastBookings"
+          [booking]="booking"
+        >
+        </app-booking-card>
+      </div>
+    </div>
+  </div>
+</div>

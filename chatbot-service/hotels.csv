@@ -1,0 +1,16 @@
+name,location,description,price,rating,amenities,image_url
+Hotel Le Marais,Paris,"Charming boutique hotel in the heart of Le Marais district. Walking distance to museums and cafes. Elegant rooms with modern amenities.",180,4.5,"WiFi|Breakfast|AC|Parking",https://example.com/paris1.jpg
+Grand Hotel Paris,Paris,"Luxury 5-star hotel near the Eiffel Tower. Michelin-starred restaurant and rooftop bar. Spa and fitness center available.",350,4.8,"WiFi|Breakfast|AC|Spa|Gym|Pool|Parking",https://example.com/paris2.jpg
+Budget Inn Montmartre,Paris,"Affordable accommodation near Sacré-Cœur. Clean rooms with basic amenities. Perfect for backpackers and budget travelers.",85,4.0,"WiFi|Breakfast",https://example.com/paris3.jpg
+Bali Beach Resort,Bali,"Beachfront resort with stunning ocean views. Private beach access and water sports. Traditional Balinese architecture.",220,4.7,"WiFi|Breakfast|AC|Pool|Beach Access|Spa",https://example.com/bali1.jpg
+Ubud Jungle Villa,Bali,"Peaceful retreat surrounded by rice terraces. Yoga classes and organic restaurant. Infinity pool overlooking jungle.",175,4.6,"WiFi|Breakfast|AC|Pool|Yoga|Restaurant",https://example.com/bali2.jpg
+Kuta Surf Hostel,Bali,"Budget-friendly hostel steps from Kuta Beach. Surf lessons and board rentals. Social atmosphere for young travelers.",45,4.2,"WiFi|Surf Lessons|Beach Access",https://example.com/bali3.jpg
+Rome Colosseum Suites,Rome,"Modern apartments with Colosseum views. Self-catering kitchen and terrace. Central location near ancient ruins.",195,4.6,"WiFi|Kitchen|AC|Terrace",https://example.com/rome1.jpg
+Vatican Luxury Hotel,Rome,"5-star elegance near Vatican City. Art-filled interiors and fine dining. Concierge service for Vatican tours.",425,4.9,"WiFi|Breakfast|AC|Restaurant|Concierge|Spa",https://example.com/rome2.jpg
+Trastevere Guesthouse,Rome,"Cozy B&B in charming Trastevere neighborhood. Homemade breakfast and local tips. Family-run with personal touch.",120,4.4,"WiFi|Breakfast|AC",https://example.com/rome3.jpg
+London Thames View,London,"Contemporary hotel on the Thames riverbank. Floor-to-ceiling windows with river views. Near Tower Bridge and attractions.",280,4.7,"WiFi|Breakfast|AC|River View|Gym",https://example.com/london1.jpg
+Shoreditch Design Hotel,London,"Hip boutique hotel in trendy Shoreditch. Street art decor and rooftop terrace. Close to markets and nightlife.",210,4.5,"WiFi|Breakfast|AC|Rooftop Bar",https://example.com/london2.jpg
+Kings Cross Budget,London,"Simple accommodation near King's Cross station. Easy access to trains and city center. Clean rooms at great prices.",95,4.1,"WiFi|Breakfast",https://example.com/london3.jpg
+Tokyo Shibuya Hotel,Tokyo,"Modern high-rise in bustling Shibuya. Panoramic city views and Japanese-style rooms. Walking distance to shopping.",240,4.6,"WiFi|Breakfast|AC|City View",https://example.com/tokyo1.jpg
+Kyoto Ryokan Experience,Tokyo,"Traditional Japanese inn with tatami rooms. Onsen baths and kaiseki meals. Cultural immersion in historic setting.",320,4.8,"WiFi|Breakfast|Dinner|Onsen|Traditional",https://example.com/tokyo2.jpg
+Capsule Pod Akihabara,Tokyo,"Futuristic capsule hotel in electronics district. Compact sleeping pods with entertainment systems. Budget-friendly tech experience.",55,4.3,"WiFi|Locker|Entertainment",https://example.com/tokyo3.jpg

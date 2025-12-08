@@ -1,0 +1,10 @@
+<div class="rooms-grid-wrapper">
+  <ul class="rooms-grid">
+    <li *ngFor="let booking of bookings" class="room-grid-item">
+      <app-booking-card
+        [booking]="booking"
+    
+      ></app-booking-card>
+    </li>
+  </ul>
+</div>

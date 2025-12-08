@@ -1,0 +1,127 @@
+<!-- Booking Search Page -->
+<div class="bookings-search-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Find Your Booking</h1>
+      <p class="page-subtitle">Search for your reservation using the booking reference number</p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-card">
+      <div class="search-header">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <h2 class="search-title">Booking Reference Search</h2>
+      </div>
+      
+      <div class="search-form">
+        <div class="search-input-group">
+          <div class="input-wrapper">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Enter booking reference (e.g., RWSODP4W4I)"
+              [(ngModel)]="searchReference"
+              (keydown)="onEnterKey($event)"
+              [disabled]="isLoading"
+            />
+            <button 
+              class="clear-btn" 
+              *ngIf="searchReference" 
+              (click)="clearSearch()"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+            </button>
+          </div>
+          
+          <button 
+            class="search-btn"
+            (click)="searchBooking()"
+            [disabled]="isLoading || !searchReference.trim()"
+          >
+            <span *ngIf="!isLoading" class="btn-content">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+              Search
+            </span>
+            
+            <span *ngIf="isLoading" class="btn-loading">
+              <div class="loading-spinner"></div>
+              Searching...
+            </span>
+          </button>
+        </div>
+        
+        <p class="search-help">
+          <svg class="help-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+          Your booking reference is a unique code provided when you made your reservation
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" *ngIf="hasSearched">
+    
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="loading-content">
+        <div class="loading-spinner-large"></div>
+        <h3 class="loading-title">Searching for your booking...</h3>
+        <p class="loading-subtitle">Please wait while we locate your reservation</p>
+      </div>
+    </div>
+
+    <!-- Booking Found -->
+    <div class="booking-result" *ngIf="!isLoading && booking">
+      <div class="result-header">
+        <svg class="success-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"/>
+        </svg>
+        <h2 class="result-title">Booking Found!</h2>
+        <p class="result-subtitle">Here are the details of your reservation</p>
+      </div>
+      
+      <div class="booking-card-container">
+        <app-booking-card [booking]="booking"></app-booking-card>
+      </div>
+    </div>
+
+    <!-- No Booking Found -->
+    <div class="no-result" *ngIf="!isLoading && !booking">
+      <div class="no-result-content">
+        <svg class="error-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <h3 class="no-result-title">No Booking Found</h3>
+        <p class="no-result-subtitle">
+          We couldn't find a booking with reference: <strong>{{ searchReference }}</strong>
+        </p>
+        <div class="suggestions">
+          <h4 class="suggestions-title">Please check:</h4>
+          <ul class="suggestions-list">
+            <li>The booking reference is spelled correctly</li>
+            <li>You're using the complete reference number</li>
+            <li>The booking hasn't been cancelled</li>
+          </ul>
+        </div>
+        <button class="retry-btn" (click)="clearSearch()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+          </svg>
+          Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

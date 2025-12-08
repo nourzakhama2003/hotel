@@ -1,0 +1,12 @@
+<footer class="bg-gray-800 text-white py-6 ">
+      <div class="container mx-auto px-4 text-center">
+        <ng-content select="[top]"></ng-content> <!-- Top section for custom content -->
+        <div class="mt-4">
+          <ng-content select="[middle]"></ng-content> <!-- Middle section (e.g., links) -->
+        </div>
+        <p class="mt-4 text-sm">
+          <ng-content select="[bottom]"></ng-content> <!-- Bottom section (e.g., copyright) -->
+          © 2025 Hotel Booking App. All rights reserved.
+        </p>
+      </div>
+    </footer>

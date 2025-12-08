@@ -1,0 +1,17 @@
+# Exclude build outputs and IDE files from Docker context
+target/
+.mvn/
+mvnw
+mvnw.cmd
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.log
+*.tmp
+
+# Keep src/ and pom.xml as these are needed for build

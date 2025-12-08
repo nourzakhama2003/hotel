@@ -1,0 +1,42 @@
+<div class="hotels-content-section">
+  <div class="hotels-list-container">
+    <div class="hotels-list-header">
+      <h2 class="list-title">Available Hotels</h2>
+      <div class="list-controls">
+        <span class="results-count"
+          >{{ hotels.length }} hotel{{
+            hotels.length !== 1 ? "s" : ""
+          }}
+          found</span
+        >
+        <div class="view-controls">
+          <button class="view-toggle active" title="Grid View">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hotels-list-wrapper">
+      <div class="hotels-grid-wrapper">
+        <ul class="hotels-grid">
+          <li
+            *ngFor="let hotel of hotels; trackBy: trackByHotelId"
+            class="hotel-grid-item"
+          >
+            <app-hotel-card
+              [hotel]="hotel"
+              (onUpdate)="onUpdateHotel($event)"
+              (onDelete)="onDeleteHotel($event)"
+            >
+            </app-hotel-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

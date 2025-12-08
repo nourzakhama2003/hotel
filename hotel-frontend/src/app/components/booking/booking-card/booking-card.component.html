@@ -1,0 +1,154 @@
+<!-- Modern Booking Card -->
+<div
+  class="booking-card"
+  [ngClass]="{
+    'card-upcoming': isUpcoming,
+    'card-active': isActive,
+    'card-past': isPast
+  }"
+>
+  <!-- Card Header with Status -->
+  <div class="card-header">
+    <div class="booking-reference">
+      <span class="reference-label">Booking Reference</span>
+      <span class="reference-number">{{ booking.bookingReference }}</span>
+    </div>
+    <div class="status-badges">
+      <span class="booking-status" [ngClass]="statusClass">
+        {{ booking.bookingStatus }}
+      </span>
+      <span class="payment-status" [ngClass]="paymentStatusClass">
+        {{ booking.paymentStatus }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <!-- Date Information -->
+    <div class="dates-section">
+      <div class="date-info">
+        <div class="date-type">Check-in</div>
+        <div class="date-value">{{ checkInDate | date : "MMM dd, yyyy" }}</div>
+        <div class="time-value">{{ checkInDate | date : "HH:mm" }}</div>
+      </div>
+
+      <div class="duration-info">
+        <svg class="duration-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"
+          />
+        </svg>
+        <span class="nights-count"
+          >{{ nightsCount }} {{ nightsCount === 1 ? "night" : "nights" }}</span
+        >
+      </div>
+
+      <div class="date-info">
+        <div class="date-type">Check-out</div>
+        <div class="date-value">{{ checkOutDate | date : "MMM dd, yyyy" }}</div>
+        <div class="time-value">{{ checkOutDate | date : "HH:mm" }}</div>
+      </div>
+    </div>
+
+    <!-- Room and Price Information -->
+    <div class="booking-details">
+      <div class="room-info">
+        <svg class="room-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M21 10.78V8c0-1.65-1.35-3-3-3h-4c-.77 0-1.47.3-2 .78-.53-.48-1.23-.78-2-.78H6c-1.65 0-3 1.35-3 3v2.78c-.61.55-1 1.34-1 2.22v6h2v-2h16v2h2v-6c0-.88-.39-1.67-1-2.22zM14 7h4c.55 0 1 .45 1 1v2h-6V8c0-.55.45-1 1-1zM5 8c0-.55.45-1 1-1h4c.55 0 1 .45 1 1v2H5V8z"
+          />
+        </svg>
+        <div class="room-details">
+          <span class="room-label">Room ID</span>
+          <span class="room-number">#{{ booking.roomId }}</span>
+        </div>
+      </div>
+
+      <div class="price-info">
+        <span class="price-label">Total Amount</span>
+        <span class="price-value"
+          >${{ booking.totalPrice | number : "1.2-2" }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Timeline Indicator -->
+    <div class="timeline-indicator" *ngIf="isUpcoming || isActive">
+      <div
+        class="timeline-bar"
+        [ngClass]="{ active: isActive, upcoming: isUpcoming }"
+      >
+        <div
+          class="timeline-progress"
+          [style.width]="isActive ? '50%' : '0%'"
+        ></div>
+      </div>
+      <div class="timeline-labels">
+        <span class="timeline-label" [ngClass]="{ active: isActive || isPast }"
+          >Check-in</span
+        >
+        <span class="timeline-label" [ngClass]="{ active: isPast }"
+          >Check-out</span
+        >
+      </div>
+    </div>
+
+    <!-- Booking Created Date -->
+    <div class="booking-meta">
+      <span class="meta-label">Booked on:</span>
+      <span class="meta-value">{{
+        booking.createAt | date : "MMM dd, yyyy HH:mm"
+      }}</span>
+    </div>
+  </div>
+
+  <!-- Card Actions -->
+  <div class="card-actions">
+    <button class="action-btn secondary" *ngIf="isUpcoming">
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+        />
+      </svg>
+      View Details
+    </button>
+
+    <button
+      class="action-btn danger"
+      *ngIf="isUpcoming && booking.bookingStatus !== 'CANCELLED'"
+    >
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+        />
+      </svg>
+      Cancel
+    </button>
+
+    <button
+      class="action-btn primary"
+      *ngIf="
+        booking.paymentStatus === 'PENDING' &&
+        booking.bookingStatus !== 'CANCELLED'
+      "
+      (click)="checkEmail()"
+    >
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"
+        />
+      </svg>
+      Pay Now
+    </button>
+
+    <button class="action-btn success" *ngIf="isActive">
+      <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"
+        />
+      </svg>
+      Check In
+    </button>
+  </div>
+</div>

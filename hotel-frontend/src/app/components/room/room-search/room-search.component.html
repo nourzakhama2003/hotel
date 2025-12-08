@@ -1,0 +1,78 @@
+<div class="room-search-form">
+  <div class="search-grid">
+    <div class="search-field">
+      <label for="checkInDate" class="search-label">Check-in Date</label>
+      <div class="search-input-wrapper">
+        <svg class="input-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          id="checkInDate"
+          class="search-input"
+          type="datetime-local"
+          [(ngModel)]="checkInDate"
+          [min]="minCheckin"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="search-field">
+      <label for="checkOutDate" class="search-label">Check-out Date</label>
+      <div class="search-input-wrapper">
+        <svg class="input-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          id="checkOutDate"
+          class="search-input"
+          type="datetime-local"
+          [(ngModel)]="checkOutDate"
+          [min]="minCheckout"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="search-field">
+      <label for="roomType" class="search-label">Room Type</label>
+      <div class="search-input-wrapper">
+        <svg class="input-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"
+          />
+          <path
+            d="M8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm0 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+          />
+        </svg>
+        <select id="roomType" class="search-input" [(ngModel)]="selectedType">
+          <option value="">All Room Types</option>
+          <option *ngFor="let type of roomType" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-actions">
+    <button (click)="searchAvailableRooms()" class="search-btn" type="button">
+      <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fill-rule="evenodd"
+          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      Search Available Rooms
+    </button>
+  </div>
+</div>

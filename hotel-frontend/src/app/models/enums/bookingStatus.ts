@@ -1,0 +1,6 @@
+export enum Booknigstatus{
+    BOOKED="BOOKED",
+    CANCELLED="CANCELLED",
+    CHECKED_OUT="CHECKED_OUT",
+    CHECKED_IN="CHECKED_IN"
+}

@@ -1,0 +1,98 @@
+<div class="face-login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="hotel-icon">
+        <i class="pi pi-building"></i>
+      </div>
+      <h1>Hotel Management System</h1>
+      <p class="subtitle">Sign in with your face or password</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="pi pi-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="pi pi-times-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Face Capture Component -->
+    <div *ngIf="showCamera" class="camera-section">
+      <app-face-capture
+        (imageCaptured)="onImageCaptured($event)"
+        (captureCancelled)="onCaptureCancelled()"
+      >
+      </app-face-capture>
+    </div>
+
+    <!-- Login Options (when camera is not active) -->
+    <div *ngIf="!showCamera && !isProcessing" class="login-options">
+      <!-- Face Login Button -->
+      <button
+        type="button"
+        class="login-button face-login"
+        (click)="startFaceLogin()"
+      >
+        <i class="pi pi-user"></i>
+        <span>Sign in with Face Recognition</span>
+        <small>Quick and secure authentication</small>
+      </button>
+
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <!-- Password Login Button -->
+      <button
+        type="button"
+        class="login-button password-login"
+        (click)="loginWithPassword()"
+      >
+        <i class="pi pi-lock"></i>
+        <span>Sign in with Password</span>
+        <small>Traditional login method</small>
+      </button>
+    </div>
+
+    <!-- Processing State -->
+    <div *ngIf="isProcessing" class="processing-state">
+      <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+      <p>Authenticating your face...</p>
+      <small>Please wait while we verify your identity</small>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div class="signup-link">
+      <p>
+        Don't have an account?
+        <button type="button" class="link-button" (click)="goToSignUp()">
+          Sign up here
+        </button>
+      </p>
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-section">
+      <div class="info-card">
+        <i class="pi pi-shield"></i>
+        <h3>Secure & Private</h3>
+        <p>Your face data is encrypted and stored securely</p>
+      </div>
+      <div class="info-card">
+        <i class="pi pi-bolt"></i>
+        <h3>Fast Login</h3>
+        <p>Access your account in seconds</p>
+      </div>
+      <div class="info-card">
+        <i class="pi pi-eye-slash"></i>
+        <h3>No Passwords</h3>
+        <p>Say goodbye to forgotten passwords</p>
+      </div>
+    </div>
+  </div>
+</div>

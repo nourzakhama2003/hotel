@@ -1,0 +1,277 @@
+<main class="flex flex-col items-center justify-center p-4">
+  <div class="w-full">
+    <!-- Hero Section -->
+    <div
+      class="flex flex-col lg:flex-row bg-white min-h-[600px] max-w-[1400px] mx-auto rounded-lg shadow-lg overflow-hidden custom-shadow hero-section"
+    >
+      <!-- Left Content Section -->
+      <div
+        class="flex-1 flex flex-col justify-center items-center lg:items-start p-8 lg:p-12"
+      >
+        <h1
+          class="text-4xl lg:text-5xl font-bold text-gray-800 text-center lg:text-left mb-6 gradient-text"
+        >
+          Welcome to Our Luxury Hotels the best in the world
+        </h1>
+        <p class="text-gray-600 text-center lg:text-left mb-8 max-w-md">
+          Discover exceptional hospitality and unforgettable experiences at our
+          premium hotel collection.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
+          <button
+            class="px-6 py-3 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition-all duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-1"
+            *ngIf="isAdmin"
+            (click)="addHotel()"
+          >
+            ➕ Add Hotel
+          </button>
+          <button
+            class="px-6 py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-1"
+            (click)="exploreHotels()"
+          >
+            🏨 Explore Hotels
+          </button>
+        </div>
+
+        <!-- Rating Display -->
+        <div class="flex items-center space-x-2">
+          <span class="text-yellow-400 text-xl">★★★★★</span>
+          <span class="text-gray-600 text-sm">Rated 5 stars by our guests</span>
+        </div>
+      </div>
+
+      <!-- Right Image Section -->
+      <div class="flex-1 relative">
+        <img
+          src="/assets/images/aceuille.jpg"
+          alt="Luxury Hotel Welcome"
+          class="w-full h-full object-cover min-h-[300px] lg:min-h-[500px] brightness-105 contrast-110 saturate-110"
+        />
+
+        <!-- Image Overlay for enhancement -->
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Hotels Section -->
+    <div id="hotels-section" class="mt-12">
+      <!-- Search and Filter Section -->
+      <div class="search-actions-container">
+        <div class="search-section">
+          <div class="search-header">
+            <h2 class="search-title">
+              <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Discover Luxury Hotels
+            </h2>
+            <p class="search-description">
+              Find the perfect hotel by filtering by location, amenities, and
+              rating
+            </p>
+          </div>
+
+          <div class="search-content">
+            <!-- Hotel Search Form -->
+            <div class="hotel-search-form">
+              <div class="search-grid">
+                <div class="search-field">
+                  <label for="location" class="search-label">Location</label>
+                  <div class="search-input-wrapper">
+                    <svg
+                      class="input-icon"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <select id="location" class="search-input">
+                      <option value="">All Locations</option>
+                      <option value="paris">Paris</option>
+                      <option value="london">London</option>
+                      <option value="tokyo">Tokyo</option>
+                      <option value="newyork">New York</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="search-field">
+                  <label for="check-in" class="search-label">search </label>
+                  <div class="search-input-wrapper">
+                    <input
+                      class="search-input relative"
+                      type="text"
+                      [(ngModel)]="searchItem"
+                      (input)="searchHotel()"
+                      placeholder="Search hotels by name..."
+                    />
+                    <svg
+                      class="btn-icon inset-2 inset-y-5 absolute"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="search-field">
+                  <label for="check-out" class="search-label"
+                    >Check-out Date</label
+                  >
+                  <div class="search-input-wrapper">
+                    <svg
+                      class="input-icon"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <input
+                      type="date"
+                      id="check-out"
+                      class="search-input"
+                      [value]="getTomorrowDate()"
+                    />
+                  </div>
+                </div>
+
+                <div class="search-field">
+                  <label for="rating" class="search-label"
+                    >Minimum Rating</label
+                  >
+                  <div class="search-input-wrapper">
+                    <svg
+                      class="input-icon"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                    <select id="rating" class="search-input">
+                      <option value="">Any Rating</option>
+                      <option value="5">5 Stars</option>
+                      <option value="4">4+ Stars</option>
+                      <option value="3">3+ Stars</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="search-actions">
+                <button class="search-btn" type="button">
+                  <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Search Hotels
+                </button>
+                <button class="filter-btn" type="button">
+                  <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Advanced Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-section">
+          <button
+            class="add-hotel-btn"
+            *ngIf="isAdmin"
+            (click)="addHotel()"
+            title="Add New Hotel"
+          >
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span class="btn-text">Add New Hotel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hotels List -->
+      <div class="hotels-content-section">
+        <div *ngIf="!isLoading && hotels.length > 0">
+          <app-hotel-list
+            [hotels]="hotels"
+            (onUpdate)="update($event)"
+            (onDelete)="onDeleteHotel($event)"
+          ></app-hotel-list>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && hotels.length === 0" class="empty-state">
+          <div class="empty-state-content">
+            <div class="empty-icon">🏨</div>
+            <h3 class="empty-title">No Hotels Available</h3>
+            <p class="empty-description">
+              There are currently no hotels in our system. Start by adding your
+              first hotel to get started.
+            </p>
+            <button
+              class="empty-action-btn"
+              *ngIf="isAdmin"
+              (click)="addHotel()"
+            >
+              <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Add Your First Hotel
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-content">
+            <app-spinner></app-spinner>
+            <p class="loading-text">Discovering amazing hotels...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot Component -->
+  <app-chatbot></app-chatbot>
+</main>

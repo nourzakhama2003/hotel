@@ -1,0 +1,170 @@
+<div class="room-form-container">
+  <h2 class="title" mat-dialog-title>
+    {{ isEditing ? "Edit Room" : "Add New Room" }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="roomForm" class="room-form" (ngSubmit)="onSubmit()">
+      <div class="form-grooup upload-section bg-white mt-20 p-4">
+        <input
+          id="roomImageInput"
+          type="file"
+          class="hidden"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+        />
+
+        <label
+          for="roomImageInput"
+          class="cursor-pointer w-full min-h-[120px] flex justify-center items-center"
+        >
+          <div
+            *ngIf="!selectedImage"
+            class="flex flex-col upload-default items-center py-8"
+          >
+            <div class="upload-icon text-4xl">📷</div>
+            <div class="upload-text font-semibold">
+              Click to upload room image
+            </div>
+            <div class="upload-hint text-sm text-gray-500">
+              PNG, JPG up to 10MB
+            </div>
+          </div>
+
+          <div *ngIf="selectedImage" class="relative">
+            <img
+              [src]="selectedImage"
+              alt="Selected room image"
+              class="w-48 h-32 object-cover rounded-lg border-2 border-blue-500"
+            />
+            <button
+              type="button"
+              (click)="removeImage($event)"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+            >
+              ✕
+            </button>
+          </div>
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="hotel">hotels</label>
+        <select id="hotel" formControlName="hotelId">
+          <option value="">select hotel</option>
+          <option *ngFor="let hotel of hotels" [value]="hotel.id">
+            {{ hotel.hotelName }}
+          </option>
+        </select>
+        <div
+          class="error-message"
+          *ngIf="
+            roomForm.get('hotelId')?.invalid && roomForm.get('hotelId')?.touched
+          "
+        >
+          the room should belog to certain hotel
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="roomNumber">Room Number:</label>
+        <input
+          type="number"
+          id="roomNumber"
+          formControlName="roomNumber"
+          required
+        />
+        <div
+          class="error-message"
+          *ngIf="
+            roomForm.get('roomNumber')?.invalid &&
+            roomForm.get('roomNumber')?.touched
+          "
+        >
+          Room number is required and must be greater than 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Room Type:</label>
+        <select id="type" formControlName="type" required>
+          <option value="">Select room type</option>
+          <option *ngFor="let type of roomTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+        <div
+          class="error-message"
+          *ngIf="roomForm.get('type')?.invalid && roomForm.get('type')?.touched"
+        >
+          Room type is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="capacity">Capacity:</label>
+        <input
+          type="number"
+          id="capacity"
+          formControlName="capacity"
+          required
+        />
+        <div
+          class="error-message"
+          *ngIf="
+            roomForm.get('capacity')?.invalid &&
+            roomForm.get('capacity')?.touched
+          "
+        >
+          Capacity is required and must be greater than 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pricePerNight">Price per Night:</label>
+        <input
+          type="number"
+          id="pricePerNight"
+          formControlName="pricePerNight"
+          required
+        />
+
+        <div
+          class="error-message"
+          *ngIf="
+            roomForm.get('pricePerNight')?.invalid &&
+            roomForm.get('pricePerNight')?.touched
+          "
+        >
+          Price is required and must be greater than 0
+        </div>
+      </div>
+
+      <div class="form-group flex flex-col mb-52">
+        <label for="description">Description:</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="4"
+          placeholder="Room description (optional)"
+        ></textarea>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="button-container">
+    <button
+      type="button"
+      class="p-2 rounded-md bg-red-500 text-white"
+      (click)="onClose()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="p-2 rounded-md bg-green-500 text-white"
+      [disabled]="isLoading"
+      (click)="onSubmit()"
+    >
+      {{ isLoading ? "Saving..." : isEditing ? "Update" : "Save" }}
+    </button>
+  </mat-dialog-actions>
+</div>

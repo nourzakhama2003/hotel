@@ -1,0 +1,71 @@
+/* Profile Modal Styling */
+:host ::ng-deep .mat-mdc-dialog-container {
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+form {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Face Recognition Section */
+.face-recognition-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e5e7eb;
+}
+
+.face-recognition-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.face-recognition-section p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.face-recognition-section button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.face-recognition-section button:hover {
+  background-color: #2563eb;
+}
+
+.face-recognition-section button i {
+  font-size: 1rem;
+}
+
+/* Scrollbar styling */
+form::-webkit-scrollbar {
+  width: 8px;
+}
+
+form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+form::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

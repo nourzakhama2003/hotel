@@ -1,0 +1,134 @@
+/* Ensure the dialog content is visible and properly styled */
+.mat-dialog-content {
+  min-width: 400px;
+  max-width: 600px;
+  padding: 20px;
+  padding-top: 60px; /* Add space for title */
+  padding-bottom: 80px; /* Add space for buttons */
+
+  overflow-y: auto; /* Enable scrolling if needed */
+  display: flex; /* Make it flexbox */
+  flex-direction: column; /* Stack elements vertically */
+}
+.upload-default{
+ gap:5px
+}
+
+.upload-section{
+   border: 2px dashed #d1d5db;
+   border-radius: 12px;
+   text-align: center;
+   transition: all 0.3s ease;
+   min-height: 150px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.upload-section:hover{
+  border: 2px dashed #3b82f6;
+  background-color: #f8fafc;
+}
+.room-form-container {
+  position: relative;
+  height: 100%; /* Take full height */
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group{
+  display: flex;
+  flex-direction:column;
+  margin-bottom: 5px;
+}
+
+/* Make the last form group (description) expand to fill space */
+.form-group:last-of-type {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+/* Form styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  flex: 1; /* Take available space */
+  height: 100%; /* Use full height */
+}
+
+/* Input styling */
+input, select, textarea {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Make description textarea expand to fill remaining space */
+textarea {
+  flex: 1;
+  min-height: 100px;
+  resize: vertical;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Label styling */
+label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+/* Button styling */
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+.title{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  background: white;
+  z-index: 10;
+  margin: 0;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+/* Button container */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  padding: 10px;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+
+
+/* Error messages */
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+
+}

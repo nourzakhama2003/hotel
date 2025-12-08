@@ -1,0 +1,11 @@
+    <div class="flex gap-6 text-white "><li *ngFor="let link of links">
+        <a
+        class="text-inherit no-underline"
+          [routerLink]="link.path"
+          *ngIf="(link.name !== 'dashboard'&& link.name!=='All-Bookings') || (link.name === 'dashboard' && admin)|| (link.name === 'All-Bookings' && admin)"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ link.name }}
+        </a>
+      </li></div>

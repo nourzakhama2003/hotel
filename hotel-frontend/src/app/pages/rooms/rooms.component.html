@@ -1,0 +1,311 @@
+<div class="rooms-page-container">
+  <!-- Hotel Information Banner -->
+  <div class="hotel-info-banner" *ngIf="hotel">
+    <div class="hotel-banner-background">
+      <img
+        [src]="hotel.hotelImage || '/assets/images/hotelDefault.jpg'"
+        [alt]="hotel.hotelName"
+        class="hotel-background-image"
+        loading="lazy"
+      />
+      <div class="hotel-image-overlay"></div>
+      <div class="floating-elements">
+        <div class="floating-element element-1"></div>
+        <div class="floating-element element-2"></div>
+        <div class="floating-element element-3"></div>
+      </div>
+    </div>
+
+    <div class="hotel-banner-content">
+      <div class="hotel-info-left">
+        <div class="hotel-badge">
+          <svg class="hotel-badge-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+            />
+          </svg>
+          <span class="hotel-badge-text">LUXURY HOTEL</span>
+        </div>
+
+        <div class="hotel-title-container">
+          <h1 class="hotel-name">{{ hotel.hotelName }}</h1>
+          <div class="hotel-rating">
+            <div class="stars">
+              <span class="star">⭐</span>
+              <span class="star">⭐</span>
+              <span class="star">⭐</span>
+              <span class="star">⭐</span>
+              <span class="star">⭐</span>
+            </div>
+            <span class="rating-text">5.0 Premium Rating</span>
+          </div>
+        </div>
+
+        <p class="hotel-description">
+          Experience luxury and comfort in our beautifully designed rooms with
+          world-class amenities and exceptional service.
+        </p>
+
+        <!-- Hotel Features -->
+        <div class="hotel-features">
+          <div class="feature-item">
+            <div class="feature-icon">🏊‍♂️</div>
+            <span class="feature-text">Pool & Spa</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🍽️</div>
+            <span class="feature-text">Fine Dining</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">�️</div>
+            <span class="feature-text">Free Parking</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">📶</div>
+            <span class="feature-text">Free WiFi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hotel-info-right">
+        <div class="stats-grid">
+          <div class="stat-item rooms">
+            <div class="stat-icon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z"
+                />
+                <path
+                  d="M8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm0 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-number">{{ rooms.length }}</span>
+              <span class="stat-label">Rooms Available</span>
+            </div>
+          </div>
+
+          <div class="stat-item availability">
+            <div class="stat-icon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-number">{{ getAvailableRoomsCount() }}</span>
+              <span class="stat-label">Available Now</span>
+            </div>
+          </div>
+
+          <div class="stat-item location">
+            <div class="stat-icon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-number">★</span>
+              <span class="stat-label">Prime Location</span>
+            </div>
+          </div>
+
+          <div class="stat-item price">
+            <div class="stat-icon">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-number">$120</span>
+              <span class="stat-label">From per night</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-primary">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Virtual Tour
+          </button>
+          <button class="btn-secondary">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+              />
+            </svg>
+            Gallery
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header Section -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="page-title-section">
+        <h1 class="page-title">
+          <span class="title-icon">🏨</span>
+          <span *ngIf="hotel; else defaultTitle"
+            >{{ hotel.hotelName }} - Room Management</span
+          >
+          <ng-template #defaultTitle>Hotel Rooms Management</ng-template>
+        </h1>
+        <p class="page-subtitle">
+          Manage and explore available rooms for
+          <span class="hotel-highlight" *ngIf="hotel">{{
+            hotel.hotelName
+          }}</span
+          ><span *ngIf="!hotel">your hotel</span>
+        </p>
+      </div>
+
+      <!-- Page Statistics -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">🏠</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ rooms.length }}</span>
+            <span class="stat-label">Total Rooms</span>
+          </div>
+        </div>
+        <div class="stat-card available">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getAvailableRoomsCount() }}</span>
+            <span class="stat-label">Available</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Actions Section -->
+  <div class="search-actions-container">
+    <div class="search-section">
+      <div class="search-header">
+        <h2 class="search-title">
+          <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Search & Filter Rooms
+        </h2>
+        <p class="search-description">
+          Find the perfect room by filtering by type, price, and availability
+        </p>
+      </div>
+
+      <div class="search-content">
+        <app-room-search
+          (onSearch)="searchAvailableRooms($event)"
+        ></app-room-search>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <button class="add-room-btn" (click)="addRoom()" title="Add New Room">
+        <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <span class="btn-text">Add New Room</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="rooms-content-section">
+      <div class="loading-container">
+        <div class="loading-content">
+          <app-spinner></app-spinner>
+          <h3 class="loading-title">Loading Rooms...</h3>
+          <p class="loading-description">
+            Please wait while we fetch the latest room information
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && rooms.length === 0" class="rooms-content-section">
+      <div class="empty-state">
+        <div class="empty-state-content">
+          <div class="empty-icon">🏠</div>
+          <h3 class="empty-title">No Rooms Available</h3>
+          <p class="empty-description">
+            There are currently no rooms available for this hotel. Add some
+            rooms to get started.
+          </p>
+          <button class="empty-action-btn" (click)="addRoom()">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Add Your First Room
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rooms List -->
+    <div *ngIf="!isLoading && rooms.length > 0" class="rooms-content-section">
+      <div class="rooms-list-container">
+        <div class="rooms-list-header">
+          <h2 class="list-title">Available Rooms</h2>
+          <div class="list-controls">
+            <span class="results-count"
+              >{{ rooms.length }} room{{
+                rooms.length !== 1 ? "s" : ""
+              }}
+              found</span
+            >
+          </div>
+        </div>
+
+        <div class="rooms-list-wrapper">
+          <app-room-list
+            [rooms]="rooms"
+            [allRooms]="false"
+            (onUpdate)="update($event)"
+            (onDelete)="delete($event)"
+          >
+          </app-room-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

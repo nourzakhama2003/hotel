@@ -1,0 +1,12 @@
+<div class="rooms-grid-wrapper">
+  <ul class="rooms-grid">
+    <li *ngFor="let room of rooms" class="room-grid-item">
+      <app-room-card
+        [room]="room"
+        [allRooms]="allRooms"
+        (onUpdate)="update($event)"
+        (onDelete)="deleteRoom($event)"
+      ></app-room-card>
+    </li>
+  </ul>
+</div>

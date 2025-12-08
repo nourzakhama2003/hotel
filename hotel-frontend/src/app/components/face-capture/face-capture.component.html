@@ -1,0 +1,100 @@
+<div class="face-capture-container">
+  <div class="camera-wrapper">
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Video Stream Container - Always rendered -->
+    <div class="video-container" [hidden]="capturedImage || !!errorMessage">
+      <video
+        #videoElement
+        autoplay
+        playsinline
+        muted
+        class="video-element"
+      ></video>
+
+      <!-- Loading overlay -->
+      <div *ngIf="!isCameraReady && !errorMessage" class="loading-overlay">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Initializing camera...</p>
+      </div>
+
+      <!-- Face guide overlay -->
+      <div *ngIf="isCameraReady" class="face-guide">
+        <div class="face-oval"></div>
+        <p class="guide-text">Position your face within the oval</p>
+      </div>
+    </div>
+
+    <!-- Captured Image Preview -->
+    <div *ngIf="capturedImage" class="preview-container">
+      <img [src]="capturedImage" alt="Captured face" class="captured-image" />
+    </div>
+
+    <!-- Hidden canvas for image capture -->
+    <canvas #canvasElement style="display: none"></canvas>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <!-- Buttons when camera is streaming -->
+    <div *ngIf="isStreaming && !capturedImage" class="button-group">
+      <button
+        type="button"
+        class="btn btn-capture"
+        (click)="captureImage()"
+        [disabled]="!isCameraReady"
+      >
+        <i class="pi pi-camera"></i>
+        Capture Face
+      </button>
+      <button type="button" class="btn btn-cancel" (click)="cancel()">
+        <i class="pi pi-times"></i>
+        Cancel
+      </button>
+    </div>
+
+    <!-- Buttons when image is captured -->
+    <div *ngIf="capturedImage" class="button-group">
+      <button type="button" class="btn btn-confirm" (click)="confirmImage()">
+        <i class="pi pi-check"></i>
+        Use This Photo
+      </button>
+      <button type="button" class="btn btn-retake" (click)="retakeImage()">
+        <i class="pi pi-refresh"></i>
+        Retake
+      </button>
+      <button type="button" class="btn btn-cancel" (click)="cancel()">
+        <i class="pi pi-times"></i>
+        Cancel
+      </button>
+    </div>
+
+    <!-- Error state button -->
+    <div *ngIf="errorMessage" class="button-group">
+      <button type="button" class="btn btn-retry" (click)="startCamera()">
+        <i class="pi pi-refresh"></i>
+        Retry
+      </button>
+      <button type="button" class="btn btn-cancel" (click)="cancel()">
+        <i class="pi pi-times"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <h4><i class="pi pi-info-circle"></i> Instructions</h4>
+    <ul>
+      <li>Ensure good lighting on your face</li>
+      <li>Look directly at the camera</li>
+      <li>Remove glasses if possible</li>
+      <li>Keep a neutral expression</li>
+      <li>Position your face within the oval guide</li>
+    </ul>
+  </div>
+</div>

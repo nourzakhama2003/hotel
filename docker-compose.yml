@@ -1,0 +1,171 @@
+﻿services:
+  db:
+    image: mysql:8.0
+    container_name: hotel-mysql
+    restart: always
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - my-database:/var/lib/mysql
+    ports:
+      - "3309:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  postgres:
+    image: postgres:16
+    container_name: hotel-postgres
+    restart: always
+    env_file: ./.env
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:-25.0.5}
+    container_name: hotel-keycloak
+    restart: always
+    env_file: ./.env
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB_NAME}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: ${KEYCLOAK_EXTERNAL_FQDN}
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "true"
+      KC_FEATURES: token-exchange
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+    command: start-dev --import-realm
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/keycloak-import/realm-config-${PROFILE:-dev}.json:/opt/keycloak/data/import/realm-config.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build: # Build locally for development/testing
+      context: hotel-backend
+      dockerfile: ../docker/backend/Dockerfile
+    image: nourzakhama2003/backend:${VERSION:-latest}
+    container_name: hotel-backend
+    restart: always
+    env_file: ./.env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE:-dev}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${APP_DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: ${KEYCLOAK_JWK_SET_URI}
+      KEYCLOAK_ADMIN_SERVERURL: ${KEYCLOAK_SERVER_URL}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      # Face Recognition Configuration
+      FACE_RECOGNITION_UPLOAD_DIR: /app/face-uploads
+      FACE_RECOGNITION_SERVICE_URL: http://face-recognition:5000
+      FACE_RECOGNITION_THRESHOLD: 0.85
+      # Keep face files by default in Docker for debugging
+      FACE_RECOGNITION_KEEP_FILES: ${FACE_RECOGNITION_KEEP_FILES:-true}
+    volumes:
+      - face-uploads:/app/face-uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      face-recognition:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+
+  frontend:
+    build: # Build locally for development/testing
+      context: hotel-frontend
+      dockerfile: ../docker/frontend/Dockerfile
+      args:
+        # Use 'development' for local Docker (uses environment.ts with localhost)
+        # Use 'production' for VPS deployment (uses environment.prod.ts with domain)
+        ENVIRONMENT: development
+    image: nourzakhama2003/frontend:${VERSION:-latest}
+    container_name: hotel-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
+  face-recognition:
+    build:
+      context: face-recognition-service
+      dockerfile: Dockerfile
+    image: nourzakhama2003/face-recognition:${VERSION:-latest}
+    container_name: hotel-face-recognition
+    restart: always
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  chatbot:
+    build:
+      context: chatbot-service
+      dockerfile: Dockerfile
+    image: nourzakhama2003/hotel-chatbot:${VERSION:-latest}
+    container_name: hotel-chatbot
+    restart: always
+    ports:
+      - "5001:5001"
+    volumes:
+      - chatbot-data:/app/faiss_index
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: hotel-phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8085:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+  my-database:
+  face-uploads:
+  chatbot-data:
