@@ -25,6 +25,10 @@ prod
 .env
 profile=prod
 docker compose up -d 
+
+
+docker compose build --no-cache frontend
+docker compose up -d frontend
 > Full-stack hotel booking application with Keycloak authentication and face recognition
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.0-brightgreen.svg)](https://spring.io/projects/spring-boot)

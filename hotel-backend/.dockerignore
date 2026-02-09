@@ -14,4 +14,7 @@ mvnw.cmd
 *.log
 *.tmp
 
+# Environment files should not be included in Docker build context
+.env
+
 # Keep src/ and pom.xml as these are needed for build

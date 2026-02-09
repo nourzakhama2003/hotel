@@ -37,11 +37,13 @@ public class FaceRecognitionService {
     @PostConstruct
     public void init() {
         try {
-            // Create upload directory
-            Files.createDirectories(Paths.get(uploadDir));
-            log.info("✅ Face recognition service initialized successfully using Python deep learning service");
+            // Normalize upload directory to an absolute path and create it
+            Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
+            uploadDir = uploadPath.toString();
+            Files.createDirectories(uploadPath);
+            log.info("✅ Face recognition service initialized successfully using Python deep learning service. Upload dir: {}", uploadDir);
         } catch (Exception e) {
-            log.error("Error creating upload directory: " + e.getMessage());
+            log.error("Error creating upload directory: {}", e.getMessage(), e);
         }
     }
 
@@ -59,6 +61,9 @@ public class FaceRecognitionService {
         // Save the uploaded image temporarily
         String fileName = "face_" + userId + "_" + System.currentTimeMillis() + ".jpg";
         Path filePath = uploadPath.resolve(fileName);
+        // Ensure parent directory exists and log the path
+        Files.createDirectories(filePath.getParent());
+        log.debug("Saving uploaded face image to {}", filePath.toAbsolutePath());
         faceImage.transferTo(filePath.toFile());
 
         try {
@@ -107,6 +112,9 @@ public class FaceRecognitionService {
         // Save the uploaded image temporarily
         String fileName = "face_" + user.getId() + "_" + System.currentTimeMillis() + ".jpg";
         Path filePath = uploadPath.resolve(fileName);
+        // Ensure parent directory exists and log the path
+        Files.createDirectories(filePath.getParent());
+        log.debug("Saving uploaded face image to {}", filePath.toAbsolutePath());
         faceImage.transferTo(filePath.toFile());
 
         try {
@@ -152,6 +160,9 @@ public class FaceRecognitionService {
         // Save the uploaded image temporarily
         String fileName = "auth_face_" + System.currentTimeMillis() + ".jpg";
         Path filePath = uploadPath.resolve(fileName);
+        // Ensure parent directory exists and log the path
+        Files.createDirectories(filePath.getParent());
+        log.debug("Saving authentication image to {}", filePath.toAbsolutePath());
         faceImage.transferTo(filePath.toFile());
 
         try {

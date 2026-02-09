@@ -9,7 +9,7 @@ export const environment = {
     API_URL: 'http://localhost:8082/api',
 
     // Keycloak Configuration (Development - Local)
-    KEYCLOAK_URL: 'http://localhost:8080',
+    KEYCLOAK_URL: 'http://localhost:8080/',
     KEYCLOAK_REALM: 'hotelrealm',
     KEYCLOAK_CLIENT_ID: 'hotel-frontend',
 

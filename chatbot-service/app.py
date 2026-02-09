@@ -42,20 +42,29 @@ llm = None
 rag_chain = None
 wikipedia_tool = None
 web_search_tool = None
+init_error = None
 
 def initialize_chatbot():
     """Initialize all chatbot components on startup"""
-    global vectorstore, retriever, llm, rag_chain, wikipedia_tool, web_search_tool
-    
+    global vectorstore, retriever, llm, rag_chain, wikipedia_tool, web_search_tool, init_error
+
     try:
         logger.info("🤖 Initializing Hotel Recommendation Chatbot...")
-        
+
         # Initialize external search tools
         logger.info("🌐 Initializing external search tools...")
-        wikipedia_tool = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
-        web_search_tool = DuckDuckGoSearchRun()
-        logger.info("✅ External search tools ready")
-        
+        try:
+            wikipedia_tool = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
+            web_search_tool = DuckDuckGoSearchRun()
+            logger.info("✅ External search tools ready")
+        except Exception as e:
+            logger.warning(f"⚠️ External search tools failed to initialize: {e}")
+
+        # Check for hotels.csv
+        if not os.path.exists("hotels.csv"):
+            raise FileNotFoundError("hotels.csv not found in the current directory")
+
+
         # Step 1: Load and split documents
         logger.info("📄 Loading hotel data from CSV...")
         loader = CSVLoader(
@@ -64,7 +73,7 @@ def initialize_chatbot():
             csv_args={'delimiter': ','}
         )
         docs = loader.load()
-        
+
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=500,
             chunk_overlap=50,
@@ -72,13 +81,13 @@ def initialize_chatbot():
         )
         chunks = splitter.split_documents(docs)
         logger.info(f"✅ Loaded {len(chunks)} document chunks")
-        
+
         # Step 2: Create embeddings and vector store
         logger.info("🔢 Creating embeddings and vector store...")
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
-        
+
         # Check if FAISS index exists
         if os.path.exists("faiss_index"):
             logger.info("📂 Loading existing FAISS index...")
@@ -95,13 +104,13 @@ def initialize_chatbot():
             )
             # Save to disk for persistence
             vectorstore.save_local("faiss_index")
-        
+
         retriever = vectorstore.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 3}
         )
         logger.info("✅ Vector store created successfully")
-        
+
         # Step 3: Load language model
         logger.info("🧠 Loading language model...")
         llm = HuggingFacePipeline.from_model_id(
@@ -114,12 +123,12 @@ def initialize_chatbot():
             }
         )
         logger.info("✅ Language model loaded")
-        
+
         # Step 4: Create RAG chain with prompt template
         logger.info("⛓️ Building RAG chain...")
-        
+
         prompt_template = """You are a helpful hotel recommendation assistant.
-        
+
 Use the following hotel information to answer the question. If the information is not available, say so politely.
 
 Context: {context}
@@ -127,12 +136,12 @@ Context: {context}
 Question: {question}
 
 Answer: Provide a helpful recommendation based on the context."""
-        
+
         prompt = ChatPromptTemplate.from_template(prompt_template)
-        
+
         def format_docs(docs):
             return "\n\n".join([f"Hotel: {doc.page_content}" for doc in docs])
-        
+
         rag_chain = (
             {
                 "context": retriever | format_docs,
@@ -143,12 +152,13 @@ Answer: Provide a helpful recommendation based on the context."""
             | StrOutputParser()
         )
         logger.info("✅ RAG chain created")
-        
+
         logger.info("🎉 Chatbot initialization complete!")
-        
+
         return True
-        
+
     except Exception as e:
+        init_error = str(e)
         logger.error(f"❌ Chatbot initialization failed: {str(e)}")
         return False
 
@@ -171,23 +181,36 @@ def chat():
     Expects JSON: {"message": "user query"}
     Returns JSON: {"response": "bot response", "confidence": float}
     """
+    if init_error:
+        return jsonify({
+            'error': 'Chatbot failed to initialize',
+            'details': init_error,
+            'status': 'service_unavailable'
+        }), 503
+
+    if not retriever or not rag_chain:
+        return jsonify({
+            'error': 'Chatbot is initializing or failed to load components',
+            'status': 'service_unavailable'
+        }), 503
+
     try:
         data = request.get_json()
-        
+
         if not data or 'message' not in data:
             return jsonify({'error': 'Message is required'}), 400
-        
+
         user_message = data['message'].strip()
-        
+
         if not user_message:
             return jsonify({'error': 'Message cannot be empty'}), 400
-        
+
         logger.info(f"💬 User query: {user_message}")
-        
+
         # Retrieve relevant hotels first
         relevant_docs = retriever.invoke(user_message)
         logger.info(f"📚 Retrieved {len(relevant_docs)} relevant hotels")
-        
+
         # Check if retrieved hotels are relevant (simple relevance check)
         is_relevant = False
         if relevant_docs:
@@ -199,11 +222,11 @@ def chat():
                 if any(word in content_lower for word in query_lower.split() if len(word) > 3):
                     is_relevant = True
                     break
-        
+
         # If we have relevant hotels, format them nicely as fallback
         hotels_data = []
         external_search_used = False
-        
+
         if relevant_docs and is_relevant:
             for i, doc in enumerate(relevant_docs, 1):
                 # Parse hotel data from document
@@ -214,7 +237,7 @@ def chat():
                         key, value = line.split(':', 1)
                         hotel[key.strip()] = value.strip()
                 hotels_data.append(hotel)
-            
+
             # Format as text response
             hotels_info = []
             for i, hotel in enumerate(hotels_data, 1):
@@ -225,18 +248,18 @@ def chat():
                 if amenities:
                     info += f"   ✨ {amenities}"
                 hotels_info.append(info)
-            
+
             fallback_response = f"Based on your query, here are some recommendations:\n\n" + "\n\n".join(hotels_info)
         else:
             # No relevant hotels in database - search external sources
             logger.info("🌐 No relevant hotels in database, searching external sources...")
             external_search_used = True
             hotels_data = []
-            
+
             try:
                 # Extract location from query (simple extraction)
                 location = extract_location(user_message)
-                
+
                 # Search Wikipedia for destination info
                 wiki_info = ""
                 try:
@@ -247,7 +270,7 @@ def chat():
                         logger.info("✅ Wikipedia info retrieved")
                 except Exception as wiki_error:
                     logger.warning(f"⚠️ Wikipedia search failed: {str(wiki_error)}")
-                
+
                 # Search web for hotels
                 web_info = ""
                 try:
@@ -259,22 +282,22 @@ def chat():
                         logger.info("✅ Web search results retrieved")
                 except Exception as web_error:
                     logger.warning(f"⚠️ Web search failed: {str(web_error)}")
-                
+
                 # Construct fallback response with external data
                 fallback_response = f"I don't have {location} hotels in my database yet, but here's what I found online:"
                 fallback_response += wiki_info + web_info
-                
+
                 if not wiki_info and not web_info:
                     fallback_response = f"I couldn't find hotels for '{location}' in my database or online. Try searching on:\n\n" \
                                       f"🔗 **Booking.com**: https://www.booking.com/searchresults.html?ss={location.replace(' ', '+')}\n" \
                                       f"🔗 **TripAdvisor**: https://www.tripadvisor.com/Search?q={location.replace(' ', '+')}+hotels\n" \
                                       f"🔗 **Hotels.com**: https://www.hotels.com/search.do?q-destination={location.replace(' ', '+')}\n\n" \
                                       f"*Tip: Try searching for major cities like Paris, Bali, Tokyo, Dubai, or New York.*"
-                
+
             except Exception as external_error:
                 logger.error(f"❌ External search error: {str(external_error)}")
                 fallback_response = "I couldn't find any hotels matching your criteria. Please try searching for cities in my database (Paris, Bali, Tokyo, Dubai, New York)."
-        
+
         # Try to use RAG chain for better response
         try:
             response = rag_chain.invoke(user_message)
@@ -285,9 +308,9 @@ def chat():
         except Exception as llm_error:
             logger.warning(f"⚠️ LLM failed, using fallback: {str(llm_error)}")
             response = fallback_response
-        
+
         logger.info(f"🤖 Bot response: {response[:100]}...")
-        
+
         return jsonify({
             'response': response,
             'hotels': hotels_data,  # Add structured hotel data
@@ -295,7 +318,7 @@ def chat():
             'confidence': 0.85 if not external_search_used else 0.5,
             'timestamp': datetime.now().isoformat()
         }), 200
-        
+
     except Exception as e:
         logger.error(f"❌ Chat error: {str(e)}")
         return jsonify({
@@ -309,9 +332,9 @@ def extract_location(query):
     """
     # Common location keywords
     location_keywords = ['in', 'at', 'near', 'around', 'for']
-    
+
     query_lower = query.lower()
-    
+
     # Try to find location after keywords
     for keyword in location_keywords:
         if keyword in query_lower:
@@ -321,13 +344,13 @@ def extract_location(query):
                 location_part = parts[1].strip().split()[0] if parts[1].strip() else ""
                 if location_part:
                     return location_part.capitalize()
-    
+
     # If no keyword found, try to extract capitalized words (likely locations)
     words = query.split()
     for word in words:
         if word[0].isupper() and len(word) > 3:
             return word
-    
+
     # Default fallback
     return "your destination"
 
@@ -339,27 +362,27 @@ def recommend():
     """
     try:
         data = request.get_json()
-        
+
         location = data.get('location', '')
         max_price = data.get('max_price', float('inf'))
         min_rating = data.get('min_rating', 0.0)
-        
+
         query = f"Recommend hotels in {location}"
         if max_price < float('inf'):
             query += f" under ${max_price} per night"
         if min_rating > 0:
             query += f" with rating above {min_rating}"
-        
+
         logger.info(f"🔍 Recommendation query: {query}")
-        
+
         response = rag_chain.invoke(query)
-        
+
         return jsonify({
             'response': response,
             'query': query,
             'timestamp': datetime.now().isoformat()
         }), 200
-        
+
     except Exception as e:
         logger.error(f"❌ Recommendation error: {str(e)}")
         return jsonify({'error': str(e)}), 500

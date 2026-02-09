@@ -2,16 +2,22 @@
 node_modules/
 chatbot-service/venv/
 face-recognition-service/.venv/
-# Environment files
-# .env
+
+# Environment files (should not be committed)
+.env
+# If you intentionally keep env variants in repo, uncomment specific ones
 # !.env-dev
 # !.env-prod
-# !src/environments/enviornment.ts
-# enviornments/*
+# !src/environments/environment.ts
+
 .actions/
 
-# Keycloak secrets
-# keycloak/keyclaok-import/realm-config.json
+# Keycloak realm import files (contain secrets)
+keycloak/keycloak-import/*.json
+
+# Local generated data
+chatbot-service/faiss_index/
+hotel-backend/face-uploads/
 
 # Angular build output
 dist/
