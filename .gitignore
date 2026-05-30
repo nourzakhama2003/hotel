@@ -2,9 +2,15 @@
 node_modules/
 chatbot-service/venv/
 face-recognition-service/.venv/
-
+*/venv/*
+*/.venv/*
 # Environment files (should not be committed)
 .env
+hotel-backend/src/main/resources/application-local.properties
+hotel-backend/src/main/resources/application-dev.local.properties
+hotel-backend/src/main/resources/application-prod.local.properties
+hotel-frontend/src/environments/environment.local.ts
+hotel-frontend/src/environments/environment.prod.local.ts
 # If you intentionally keep env variants in repo, uncomment specific ones
 # !.env-dev
 # !.env-prod
@@ -13,7 +19,9 @@ face-recognition-service/.venv/
 .actions/
 
 # Keycloak realm import files (contain secrets)
-keycloak/keycloak-import/*.json
+keycloak/keycloak-import/realm-config-dev.json
+keycloak/keycloak-import/realm-config-prod.json
+!keycloak/keycloak-import/realm-config-*.example.json
 
 # Local generated data
 chatbot-service/faiss_index/

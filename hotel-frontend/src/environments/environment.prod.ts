@@ -19,9 +19,6 @@ export const environment = {
     // ✅ Public key is safe in frontend (designed to be public)
     STRIPE_PUBLIC_KEY: 'pk_test_51S1GWi4BxFUD5s92q3WSd0x9yKDzJtTTR4Vc2orIISwUOV97wVBhn6elbNRM7Vs1MNqrAlO7J12ZQ2xtHk32bqWn00mt8IdCtC',
 
-    // ❌ SECRET KEY REMOVED - This should ONLY be in backend!
-    // Backend handles secret key via environment variable: STRIPE_SECRET_KEY
-
     // Chatbot Service URL (Production)
     CHATBOT_URL: 'http://app.46.lebondeveloppeur.net/chatbot',
     FACE_RECOGNITION_API_URL: 'http://app.46.lebondeveloppeur.net/face-recognition'

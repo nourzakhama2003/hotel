@@ -106,6 +106,15 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         this.sendMessage();
     }
 
+    bookHotel(hotelName: string): void {
+        this.messages.push({
+            role: 'assistant',
+            content: `Great choice! I'm initiating the booking process for **${hotelName}**. A reservation specialist will be with you shortly to finalize the details. 🏨✨`,
+            timestamp: new Date()
+        });
+        setTimeout(() => this.scrollToBottom(), 100);
+    }
+
     private scrollToBottom(): void {
         setTimeout(() => {
             if (this.chatMessagesRef) {

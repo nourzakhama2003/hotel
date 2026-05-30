@@ -134,12 +134,18 @@
                 <p class="hotel-location">📍 {{ hotel.location }}</p>
                 <p class="hotel-description">{{ hotel.description }}</p>
                 <div class="hotel-details">
-                  <span class="hotel-price">💰 ${{ hotel.price }}/night</span>
-                  <span class="hotel-rating">⭐ {{ hotel.rating }}/5</span>
+                  <span class="hotel-price">${{ hotel.price }}<small>/night</small></span>
+                  <span class="hotel-rating">★ {{ hotel.rating }}</span>
                 </div>
                 <p class="hotel-amenities" *ngIf="hotel.amenities">
-                  ✨ {{ hotel.amenities?.replace("|", ", ") }}
+                  {{ hotel.amenities.replace("|", ", ") }}
                 </p>
+                <button class="book-button" (click)="bookHotel(hotel.name!)">
+                  Book Now
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>

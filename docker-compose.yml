@@ -2,7 +2,7 @@
   db:
     image: mysql:8.0
     container_name: hotel-mysql
-    restart: always
+    restart: unless-stopped
     env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -23,7 +23,7 @@
   postgres:
     image: postgres:16
     container_name: hotel-postgres
-    restart: always
+    restart: unless-stopped
     env_file: ./.env
     environment:
       POSTGRES_DB: ${KEYCLOAK_DB_NAME}
@@ -43,7 +43,7 @@
   keycloak:
     image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:-25.0.5}
     container_name: hotel-keycloak
-    restart: always
+    restart: unless-stopped
     env_file: ./.env
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
@@ -73,7 +73,7 @@
       dockerfile: ../docker/backend/Dockerfile
     image: nourzakhama2003/backend:${VERSION:-latest}
     container_name: hotel-backend
-    restart: always
+    restart: unless-stopped
     env_file: ./.env
     environment:
       SPRING_PROFILES_ACTIVE: ${PROFILE:-dev}
@@ -111,7 +111,7 @@
         ENVIRONMENT: development
     image: nourzakhama2003/frontend:${VERSION:-latest}
     container_name: hotel-frontend
-    restart: always
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
@@ -123,7 +123,7 @@
       dockerfile: Dockerfile
     image: nourzakhama2003/face-recognition:${VERSION:-latest}
     container_name: hotel-face-recognition
-    restart: always
+    restart: unless-stopped
     ports:
       - "5000:5000"
     healthcheck:
@@ -139,7 +139,7 @@
       dockerfile: Dockerfile
     image: nourzakhama2003/hotel-chatbot:${VERSION:-latest}
     container_name: hotel-chatbot
-    restart: always
+    restart: unless-stopped
     ports:
       - "5001:5001"
     volumes:
@@ -154,7 +154,7 @@
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: hotel-phpmyadmin
-    restart: always
+    restart: unless-stopped
     environment:
       PMA_HOST: db
       PMA_PORT: 3306

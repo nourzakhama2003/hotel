@@ -2,14 +2,14 @@
 
 dev runing commands 
 docker compose up -d db postgres keycloak phpmyadmin
-cd backend 
+
 mvn clean compile
 mvn spring-boot:run
 
 cd frontend
 npm start 
 cd face-recognition-service
-.\.venv\Scripts\Activate.ps1
+./venv/Scripts/Activate.ps1
 python app.py
 
 cd chatbot-service
@@ -59,7 +59,7 @@ java -jar target\hotel-1.0.0.jar
 cd hotel-frontend
 
 # Install dependencies (first time only)
-npm install
+npm install --legacy-peer-deps
 
 # Run development server
 npm start
@@ -74,12 +74,12 @@ ng serve
 cd face-recognition-service
 
 # Create virtual environment (first time only)
-python -m venv .venv  3.13.0
+#python -m venv .venv  3.13.0
 C:\Users\LENOVO\.pyenv\pyenv-win\versions\3.11.0\python.exe -m venv venv
 3.11.0
 pyenv local 3.11.0
 # Activate virtual environment
-.\.venv\Scripts\Activate.ps1  # PowerShell
+.\venv\Scripts\Activate.ps1  # PowerShell
 # Or: .venv\Scripts\activate.bat  # CMD
 
 # Install dependencies (first time only)
@@ -173,14 +173,14 @@ docker compose up -d
 
 ## Features
 
-✅ Hotel & Room Management  
-✅ Online Booking System  
-✅ Keycloak OAuth2 Authentication  
-✅ Face Recognition Login  
-✅ Stripe Payment Integration  
-✅ Email Verification  
-✅ Docker Deployment  
-✅ CI/CD Pipeline (GitHub Actions)
+ Hotel & Room Management  
+ Online Booking System  
+Keycloak OAuth2 Authentication  
+Face Recognition Login  
+ Stripe Payment Integration  
+Email Verification  
+ Docker Deployment  
+ CI/CD Pipeline (GitHub Actions)
 
 ## Documentation
 

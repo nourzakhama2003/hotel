@@ -1,0 +1,10 @@
+public class Singleton {
+    priavet Singleton singleton
+    public Singleton() {
+        if (singleton){
+            
+        }
+        
+    }
+  
+}
