@@ -27,6 +27,13 @@ keycloak/keycloak-import/realm-config-prod.json
 chatbot-service/faiss_index/
 hotel-backend/face-uploads/
 
+# Ignore real config files (keep only the .example templates in repo)
+hotel-backend/src/main/resources/application.properties
+hotel-backend/src/main/resources/application-dev.properties
+hotel-backend/src/main/resources/application-prod.properties
+hotel-frontend/src/environments/environment.ts
+hotel-frontend/src/environments/environment.prod.ts
+
 # Angular build output
 dist/
 out-tsc/
