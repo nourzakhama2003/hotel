@@ -1,7 +1,7 @@
 {
   "realm": "hotelrealm",
   "enabled": true,
-  "displayName": "Restaurant Management Realm",
+  "displayName": "Hotel Management Realm",
   "sslRequired": "none",
   "registrationAllowed": true,
   "loginWithEmailAllowed": true,
@@ -12,17 +12,17 @@
   "accountTheme": "keycloak",
   "emailTheme": "keycloak",
   "smtpServer": {
-    "password": "nonm nzgj uvio miuh",
+    "password": "CHANGEME",
     "starttls": "true",
     "auth": "true",
     "port": "587",
-    "host": "smtp.gmail.com",
+    "host": "smtp.example.com",
     "replyToDisplayName": "Hotel Management System",
-    "replyTo": "nourzakhma@gmail.com",
+    "replyTo": "no-reply@example.com",
     "fromDisplayName": "Hotel Management System",
-    "from": "nourzakhma@gmail.com",
+    "from": "no-reply@example.com",
     "ssl": "false",
-    "user": "nourzakhma@gmail.com"
+    "user": "no-reply@example.com"
   },
   "accessTokenLifespan": 1800,
   "accessTokenLifespanForImplicitFlow": 1800,
@@ -99,11 +99,11 @@
       "emailVerified": true,
       "firstName": "Test",
       "lastName": "User",
-      "email": "test@restaurant.com",
+      "email": "testuser@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "test123",
+          "value": "CHANGEME",
           "temporary": false
         }
       ],
@@ -115,11 +115,11 @@
       "emailVerified": true,
       "firstName": "Admin",
       "lastName": "User",
-      "email": "admin@restaurant.com",
+      "email": "admin@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "nour123",
+          "value": "CHANGEME",
           "temporary": false
         }
       ],
@@ -129,11 +129,11 @@
   "clients": [
     {
       "clientId": "hotelclient",
-      "name": "Restaurant Backend Client",
+      "name": "Backend Client",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "publicClient": false,
-      "secret": "mKjvDw5BZg8Mm4OWLp52YnrPuZEjAHWP",
+      "secret": "CHANGEME",
       "webOrigins": [],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
@@ -175,28 +175,31 @@
     },
     {
       "clientId": "hotel-frontend",
-      "name": "Restaurant Frontend Client",
+      "name": "Frontend Client",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "publicClient": true,
       "redirectUris": [
-        "https://app.46.lebondeveloppeur.net/*",
-        "https://app.46.lebondeveloppeur.net/"
+        "http://localhost:4200/*",
+        "http://localhost:4200/",
+        "http://localhost:4200"
       ],
       "webOrigins": [
-        "https://app.46.lebondeveloppeur.net",
-        "+"
+        "http://localhost:4200",
+        "*"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "protocol": "openid-connect",
-      "baseUrl": "https://app.46.lebondeveloppeur.net",
+      "baseUrl": "http://localhost:4200",
+      "rootUrl": "http://localhost:4200",
       "attributes": {
         "access.token.lifespan": "1800",
         "backchannel.logout.session.required": "true",
-        "backchannel.logout.revoke.offline.tokens": "false"
+        "backchannel.logout.revoke.offline.tokens": "false",
+        "pkce.code.challenge.method": "S256"
       },
       "protocolMappers": [
         {
@@ -231,9 +234,7 @@
         "web-origins"
       ]
     }
-   
-  ]
-  , 
+  ],
   "identityProviders": [
     {
       "alias": "google",
@@ -245,8 +246,8 @@
       "trustEmail": true,
       "firstBrokerLoginFlowAlias": "first broker login",
       "config": {
-        "clientId": "955693113627-ueiqd7cvcavig88jisr5lsh6o1uqt7ps.apps.googleusercontent.com",
-        "clientSecret": "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",
+        "clientId": "CHANGEME",
+        "clientSecret": "CHANGEME",
         "defaultScope": "openid email profile",
         "useJwksUrl": "true"
       }

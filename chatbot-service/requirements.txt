@@ -13,3 +13,6 @@ requests>=2.31.0
 duckduckgo-search>=3.9.0
 ddgs>=0.1.0
 langchain-text-splitters>=0.0.1
+ctransformers>=0.2.27
+python-dotenv>=1.0.0
+langchain-google-genai>=1.0.0
